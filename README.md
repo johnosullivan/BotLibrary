@@ -1,6 +1,6 @@
 # Bot Library
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Bot Library was born out of curiosity. BL is meant to act as the buffer between block and hard coding of robotics components. The goal is to foster individual's from a younger age into the field of AI and robotics. Hopefully Bot Library will reduce the barrier of intimidation towards the subject."
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Bot Library was born out of curiosity. BL is meant to act as the buffer between block and hard coding of robotic components. The goal is to foster individual's from a younger age into the field of AI and robotics. Hopefully Bot Library will reduce the barrier of intimidation towards the subject."
 
 
 

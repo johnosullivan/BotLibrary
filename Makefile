@@ -19,11 +19,11 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so
+all: rolibcore.so rolibservo.so rolibsensor.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o
+OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -36,10 +36,14 @@ rolibcore.so: src/core/rolibcore.o
 rolibservo.so: src/servo/rolibservo.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
+rolibsensor.so: src/sensor/rolibsensor.o
+		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
+
 install: all
-	@echo "Installing..."
+	@echo "Installing"
 	$(INSTALL_DATA) bin/rolibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
+	$(INSTALL_DATA) bin/rolibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
 	@echo "Installation Complete"
 
 config:
@@ -48,9 +52,10 @@ config:
 	@echo "Config Complete"
 
 uninstall:
-	@echo "Uninstalling..."
+	@echo "Uninstalling"
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
 	@echo "Uninstall Complete"
 
 test: all
@@ -60,10 +65,14 @@ tags:
 	find . \( -name .git -type d -prune \) -o \( -name '*.[hc]' -type f -print \) | xargs ctags -a
 
 clean:
+	@echo "Cleaning"
 	$(RM) bin/rolibcore.so
 	$(RM) -r bin/rolibservo.so.dSYM
 	$(RM) bin/rolibservo.so
 	$(RM) -r bin/rolibservo.so.dSYM
+	$(RM) bin/rolibsensor.so
+	$(RM) -r bin/rolibsensor.so.dSYM
 	$(RM) $(OBJECTS)
+	@echo "Clean Complete"
 
 .PHONY: all install config uninstall clean test tags

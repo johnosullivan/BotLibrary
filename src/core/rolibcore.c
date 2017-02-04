@@ -59,6 +59,12 @@
 #endif
 #endif
 
+
+
+
+
+
+
 /* Will list what feature are supported on machine */
 static int version (lua_State *L) {
     lua_pushnumber(L, VERSIONROLIB);

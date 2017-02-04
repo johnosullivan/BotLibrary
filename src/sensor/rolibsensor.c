@@ -21,7 +21,7 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibservo_c
+#define lrolibcore_c
 #define VERSIONROLIB (l_mathop(1.0))
 
 /* Linking Frameworks */
@@ -59,22 +59,6 @@
 #endif
 #endif
 
-/* Defining Servo Structures */
-struct servo;
-typedef struct servo servo_t;
-struct servo {
-    int channel;
-    int target;
-    int sbconnection;
-};
-typedef struct {
-    servo_t *s;
-    char      *name;
-    char      *type;
-} servo_userdata_t;
-
-
-
 
 /* Will list what feature are supported on machine */
 static int version (lua_State *L) {
@@ -87,7 +71,7 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL,                            NULL                              }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibservo (lua_State *L) {
+LUAMOD_API int luaopen_rolibsensor (lua_State *L) {
     luaL_newlib(L, lservo_functions);
     lua_pushnumber(L, VERSIONROLIB);
     lua_setfield(L, -2, "version");
