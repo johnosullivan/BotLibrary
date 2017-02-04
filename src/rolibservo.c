@@ -21,7 +21,7 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolib_c
+#define lrolibservo_c
 #define VERSIONROLIB (l_mathop(1.0))
 
 /* Linking Frameworks */
@@ -70,7 +70,9 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL,                            NULL                              }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolib (lua_State *L) {
+LUAMOD_API int luaopen_rolibservo (lua_State *L) {
     luaL_newlib(L, lservo_functions);
+    lua_pushnumber(L, VERSIONROLIB);
+    lua_setfield(L, -2, "version");
     return 1;
 }
