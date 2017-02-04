@@ -23,7 +23,7 @@ all: rolibcore.so rolibservo.so rolibsensor.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o
+OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -33,7 +33,7 @@ $(OBJECTS): %.o: %.c
 rolibcore.so: src/core/rolibcore.o
 	 $(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibservo.so: src/servo/rolibservo.o
+rolibservo.so: src/servo/rolibservo.o src/servo/servo.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 rolibsensor.so: src/sensor/rolibsensor.o

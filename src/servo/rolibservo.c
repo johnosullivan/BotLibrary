@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "servo.h"
 
 #ifdef _WIN32
 #define O_NOCTTY 0
@@ -59,35 +60,39 @@
 #endif
 #endif
 
-/* Defining Servo Structures */
-struct servo;
-typedef struct servo servo_t;
-struct servo {
-    int channel;
-    int target;
-    int sbconnection;
+
+
+
+
+
+/* Servo functions */
+static const struct luaL_Reg lservo_methods[] = {
+    {"getchannel",  temp},
+    {"gettarget",   temp},
+    {"getname",     temp},
+    {"setTarget",   temp},
+    {"__gc",        temp},
+    {"__tostring",  temp},
+    { NULL,          NULL},
 };
-typedef struct {
-    servo_t *s;
-    char      *name;
-    char      *type;
-} servo_userdata_t;
-
-
-
-
-/* Will list what feature are supported on machine */
-static int version (lua_State *L) {
-    lua_pushnumber(L, VERSIONROLIB);
-    return 1;
-}
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
-    { "version",                       version                           },
-    { NULL,                            NULL                              }
+  { "newservo",    temp},
+  { "sbconnection",temp},
+  { "version",     temp},
+  { NULL,          NULL}
 };
+
+static int temp (lua_State *L) {
+    return 1;
+}
+
 /* Init the Lua Robot Library */
 LUAMOD_API int luaopen_rolibservo (lua_State *L) {
+    luaL_newmetatable(L, "Servo");
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
+    luaL_setfuncs(L, lservo_methods, 0);
     luaL_newlib(L, lservo_functions);
     lua_pushnumber(L, VERSIONROLIB);
     lua_setfield(L, -2, "version");
