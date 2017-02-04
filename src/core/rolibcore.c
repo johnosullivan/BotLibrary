@@ -1,5 +1,5 @@
 /*
- Copyright 2016 John O'Sullivan
+ Copyright 2017 John O'Sullivan
 
  Permission is hereby granted, free of charge, to any person obtaining
  a copy of this software and associated documentation files (the
