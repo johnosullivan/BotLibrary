@@ -21,7 +21,6 @@ endif
 
 all: rolibcore.so rolibservo.so
 
-
 LIB_H += $(wildcard *.h)
 
 OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o
@@ -67,4 +66,4 @@ clean:
 	$(RM) -r bin/rolibservo.so.dSYM
 	$(RM) $(OBJECTS)
 
-.PHONY: all install uninstall clean test tags
+.PHONY: all install config uninstall clean test tags
