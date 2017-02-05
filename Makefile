@@ -19,11 +19,11 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so rolibsensor.so
+all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o
+OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -39,11 +39,20 @@ rolibservo.so: src/servo/rolibservo.o src/servo/servo.o
 rolibsensor.so: src/sensor/rolibsensor.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
+rolibgpio.so: src/gpio/rolibgpio.o
+		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
+
+
+rolib.so: src/rolib.o src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o
+		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
+
 install: all
 	@echo "Installing"
 	$(INSTALL_DATA) bin/rolibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(INSTALL_DATA) bin/rolibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
+	$(INSTALL_DATA) bin/rolibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
+	#$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Installation Complete"
 
 config:
@@ -56,10 +65,15 @@ uninstall:
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
+	#$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Uninstall Complete"
 
 test: all
 	lua tests/demo.lua
+
+reset:
+	./reset.sh
 
 tags:
 	find . \( -name .git -type d -prune \) -o \( -name '*.[hc]' -type f -print \) | xargs ctags -a
@@ -72,6 +86,10 @@ clean:
 	$(RM) -r bin/rolibservo.so.dSYM
 	$(RM) bin/rolibsensor.so
 	$(RM) -r bin/rolibsensor.so.dSYM
+	$(RM) bin/rolibgpio.so
+	$(RM) -r bin/rolibgpio.so.dSYM
+	#$(RM) bin/rolibgpio.so
+	#$(RM) -r bin/rolib.so.dSYM
 	$(RM) $(OBJECTS)
 	@echo "Clean Complete"
 

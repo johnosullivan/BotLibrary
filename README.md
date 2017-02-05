@@ -2,9 +2,19 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Bot Library was born out of curiosity. BL is meant to act as the buffer between block and hard coding of robotic components. The goal is to foster individual's from a younger age into the field of AI and robotics. Hopefully Bot Library will reduce the barrier of intimidation towards the subject."
 
+# Lua Modules
 
 
+# Hardware Supported
 
+#### Boards
+* Pololu Micro Maestro 6-Channel USB Servo Controller
+* Pololu Micro Maestro 12-Channel USB Servo Controller 
+* Pololu Micro Maestro 18-Channel USB Servo Controller 
+* Pololu Micro Maestro 24-Channel USB Servo Controller 
+
+#### Sensors
+ 
 
 
 ## License

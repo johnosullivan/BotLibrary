@@ -21,8 +21,8 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibsensor_c
-#define VERSIONROLIB (l_mathop(3.0))
+#define lrolibgpio_c
+#define VERSIONROLIB (l_mathop(2.0))
 
 /* Linking Frameworks */
 #include <lua.h>
@@ -60,6 +60,11 @@
 #endif
 
 
+
+
+
+
+
 /* Will list what feature are supported on machine */
 static int version (lua_State *L) {
     lua_pushnumber(L, VERSIONROLIB);
@@ -71,7 +76,7 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL,                            NULL                              }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibsensor (lua_State *L) {
+LUAMOD_API int luaopen_rolibgpio (lua_State *L) {
     luaL_newlib(L, lservo_functions);
     lua_pushnumber(L, VERSIONROLIB);
     lua_setfield(L, -2, "version");
