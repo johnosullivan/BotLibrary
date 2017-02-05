@@ -21,7 +21,7 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibcore_c
+#define lrolibsensor_c
 #define VERSIONROLIB (l_mathop(1.0))
 
 /* Linking Frameworks */

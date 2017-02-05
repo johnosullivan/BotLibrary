@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include "servo.h"
 
-/*********************************************************
- * Functions for the servo_t structure data type.
- *********************************************************/
+/* Functions for the servo_t structure data type. */
 servo_t *servo_create(int init, int targ, int sb)
 {
     servo_t *s;
@@ -34,4 +32,3 @@ int servo_getsbc(servo_t *s)
     if (s == NULL) return 0;
     return s->sbconnection;
 }
-/********************************************************/

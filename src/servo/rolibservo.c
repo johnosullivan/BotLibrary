@@ -64,7 +64,9 @@
 
 
 
-
+static int temp (lua_State *L) {
+    return 1;
+}
 /* Servo functions */
 static const struct luaL_Reg lservo_methods[] = {
     {"getchannel",  temp},
@@ -82,10 +84,6 @@ static const struct luaL_Reg lservo_functions[] = {
   { "version",     temp},
   { NULL,          NULL}
 };
-
-static int temp (lua_State *L) {
-    return 1;
-}
 
 /* Init the Lua Robot Library */
 LUAMOD_API int luaopen_rolibservo (lua_State *L) {

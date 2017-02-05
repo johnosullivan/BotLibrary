@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #ifndef SERVO_OBJECT
 #define SERVO_OBJECT
+
+#include <stdio.h>
+#include <stdlib.h>
 
 /* Defining Servo Structures */
 struct servo;
@@ -17,6 +17,8 @@ typedef struct {
     char      *name;
     char      *type;
 } servo_userdata_t;
+
+/* Declaring the functions */
 servo_t *servo_create(int init, int targ, int sb);
 void servo_destroy(servo_t *s);
 int servo_getchannel(servo_t *s);
