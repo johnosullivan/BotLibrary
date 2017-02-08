@@ -19,7 +19,7 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so
+all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so rolib.so
 
 LIB_H += $(wildcard *.h)
 
@@ -52,7 +52,7 @@ install: all
 	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(INSTALL_DATA) bin/rolibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
 	$(INSTALL_DATA) bin/rolibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
-	#$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
+	$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Installation Complete"
 
 config:
@@ -66,7 +66,7 @@ uninstall:
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
-	#$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Uninstall Complete"
 
 test: all
@@ -88,8 +88,8 @@ clean:
 	$(RM) -r bin/rolibsensor.so.dSYM
 	$(RM) bin/rolibgpio.so
 	$(RM) -r bin/rolibgpio.so.dSYM
-	#$(RM) bin/rolibgpio.so
-	#$(RM) -r bin/rolib.so.dSYM
+	$(RM) bin/rolibgpio.so
+	$(RM) -r bin/rolib.so.dSYM
 	$(RM) $(OBJECTS)
 	@echo "Clean Complete"
 

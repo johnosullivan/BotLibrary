@@ -168,6 +168,7 @@ static const struct luaL_Reg lservo_methods[] = {
     { "__gc",        lservo_destroy   },
     { "__tostring",  lservo_tostring  },
     { NULL,          NULL             },
+    { NULL,          NULL             },
 };
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {

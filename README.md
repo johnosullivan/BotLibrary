@@ -13,13 +13,7 @@
 * Pololu Micro Maestro 18-Channel USB Servo Controller
 * Pololu Micro Maestro 24-Channel USB Servo Controller
 
-```
-
-```
-
 #### Sensors
-
-
 
 ## License
 
