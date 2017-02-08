@@ -164,7 +164,7 @@ static const struct luaL_Reg lservo_methods[] = {
     { "getchannel",  lservo_getchannel},
     { "gettarget",   lservo_gettarget },
     { "getname",     lservo_getname   },
-    { "setTarget",   lservo_setTarget },
+    { "settarget",   lservo_setTarget },
     { "__gc",        lservo_destroy   },
     { "__tostring",  lservo_tostring  },
     { NULL,          NULL             },
