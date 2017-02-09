@@ -3,7 +3,12 @@
 *.ko
 *.obj
 *.elf
+*.pyc
 
+**/bin/
+**/build/
+**/dist/
+**/pyrolib.egg-info/
 
 # Precompiled Headers
 *.gch
