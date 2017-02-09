@@ -21,6 +21,7 @@ LUALIB_API int luaopen_rolib(lua_State *L) {
     lua_pushcclosure(L, rolib_error_tostring, 0);
     lua_setfield(L, -2, "__tostring");
     lua_pop(L, 1);
+
     lua_newtable(L);
 
     luaopen_rolibcore(L);
@@ -30,10 +31,10 @@ LUALIB_API int luaopen_rolib(lua_State *L) {
     luaopen_rolibsensor(L);
     lua_setfield(L, -2, "Sensor");
 
-    /*
+
     luaopen_rolibservo(L);
     lua_setfield(L, -2, "Servo");
-    */
+
 
     return 1;
 }

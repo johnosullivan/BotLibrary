@@ -19,7 +19,7 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so rolib.so
+all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so
 
 LIB_H += $(wildcard *.h)
 
@@ -88,7 +88,7 @@ clean:
 	$(RM) -r bin/rolibsensor.so.dSYM
 	$(RM) bin/rolibgpio.so
 	$(RM) -r bin/rolibgpio.so.dSYM
-	$(RM) bin/rolibgpio.so
+	$(RM) bin/rolib.so
 	$(RM) -r bin/rolib.so.dSYM
 	$(RM) $(OBJECTS)
 	@echo "Clean Complete"

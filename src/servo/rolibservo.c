@@ -174,6 +174,7 @@ static const struct luaL_Reg lservo_methods[] = {
 static const struct luaL_Reg lservo_functions[] = {
     { "create_servo",   lservo_new       },
     { "sbc",     lservoboradconnection   },
+    { NULL,          NULL                },
     { NULL,          NULL                }
 };
 /* Init the Lua Robot Library */
