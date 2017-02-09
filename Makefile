@@ -55,6 +55,9 @@ install: all
 	$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Installation Complete"
 
+installpy:
+	sudo python setup.py install
+
 config:
 	@echo "Configuring"
 	mkdir -p $(BIN)
@@ -69,8 +72,11 @@ uninstall:
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Uninstall Complete"
 
-test: all
-	lua tests/demo.lua
+test_lua:
+	lua tests/lua/example1.lua
+
+test_py:
+	python tests/python/example1.py
 
 reset:
 	./reset.sh

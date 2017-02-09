@@ -9,6 +9,11 @@ rm -rf dist
 echo "Deleting pyc files in python src"
 cd pyrolib
 rm -r *.pyc
+#########
+cd gpio
+rm -r *.pyc
+cd ..
+#########
 cd ..
 echo "Removing Lua module builds"
 make clean

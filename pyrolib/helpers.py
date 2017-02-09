@@ -1,2 +1,2 @@
-def get_answer():
+def valid_system():
     return True
