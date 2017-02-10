@@ -46,7 +46,7 @@ rolibgpio.so: src/gpio/rolibgpio.o
 rolib.so: src/rolib.o src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-install: all
+install_lua: all
 	@echo "Installing"
 	$(INSTALL_DATA) bin/rolibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
@@ -55,7 +55,7 @@ install: all
 	$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Installation Complete"
 
-installpy:
+install_py:
 	sudo python setup.py install
 
 config:
@@ -72,14 +72,17 @@ uninstall:
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
 	@echo "Uninstall Complete"
 
-test_lua:
+tests_lua:
 	lua tests/lua/example1.lua
 
-test_py:
+tests_py:
 	python tests/python/example1.py
 
 reset:
 	./reset.sh
+
+cleaning:
+	sudo ./cleaning.sh
 
 tags:
 	find . \( -name .git -type d -prune \) -o \( -name '*.[hc]' -type f -print \) | xargs ctags -a

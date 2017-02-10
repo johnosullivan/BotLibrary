@@ -1,6 +1,6 @@
 #!/bin/bash
 make clean
 make uninstall
-make install
+make install_lua
 make clean
 clear
