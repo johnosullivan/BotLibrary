@@ -19,11 +19,11 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so
+all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so rolib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o
+OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o src/servo/maestro/maestro.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -33,7 +33,7 @@ $(OBJECTS): %.o: %.c
 rolibcore.so: src/core/rolibcore.o
 	 $(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibservo.so: src/servo/rolibservo.o src/servo/servo.o
+rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestro.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 rolibsensor.so: src/sensor/rolibsensor.o
@@ -42,8 +42,10 @@ rolibsensor.so: src/sensor/rolibsensor.o
 rolibgpio.so: src/gpio/rolibgpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-
 rolib.so: src/rolib.o src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o
+		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
+
+maestro.so: src/servo/maestro/maestro.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 install_lua: all

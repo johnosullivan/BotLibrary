@@ -39,6 +39,9 @@
 #include <unistd.h>
 #include "servo.h"
 
+#define MAESTRO  "maestro"
+#include "maestro/maestro.h"
+
 #ifdef _WIN32
 #define O_NOCTTY 0
 #else
@@ -59,6 +62,8 @@
 #define L_RANDMAX   RAND_MAX
 #endif
 #endif
+
+
 
 // Creates a new servo object
 static int lservo_new(lua_State *L)
@@ -125,6 +130,9 @@ static int lservo_setTarget(lua_State *L)
     channel = servo_getchannel(so->s);
     getconnect = servo_getsbc(so->s);
     // Excute servo command via usb serial port.
+    if (strcmp(type, MAESTRO) == 0) {
+        maestroSetTarget(getconnect,(unsigned char)channel,(unsigned short)targetval);
+    }
     return 1;
 }
 // Destroys the servo object.

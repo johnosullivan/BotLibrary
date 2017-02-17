@@ -31,10 +31,10 @@ LUALIB_API int luaopen_rolib(lua_State *L) {
     luaopen_rolibsensor(L);
     lua_setfield(L, -2, "Sensor");
 
-
+    /*
     luaopen_rolibservo(L);
     lua_setfield(L, -2, "Servo");
-
+    */
 
     return 1;
 }
