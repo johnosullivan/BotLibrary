@@ -131,7 +131,7 @@ static int lservo_setTarget(lua_State *L)
     getconnect = servo_getsbc(so->s);
     // Excute servo command via usb serial port.
     if (strcmp(type, MAESTRO) == 0) {
-        maestroSetTarget(getconnect,(unsigned char)channel,(unsigned short)targetval);
+        //maestroSetTarget(getconnect,(unsigned char)channel,(unsigned short)targetval);
     }
     return 1;
 }
