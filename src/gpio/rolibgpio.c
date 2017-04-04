@@ -59,26 +59,50 @@
 #endif
 #endif
 
-
-
-
-
-
-
-/* Will list what feature are supported on machine */
-static int version (lua_State *L) {
-    lua_pushnumber(L, VERSIONROLIB);
+static int gpio_new(lua_State *L) {
+    lua_remove(L, 1);
+    lua_newuserdata(L, sizeof(gpio_t));
+    luaL_getmetatable(L, "GPIO");
+    lua_setmetatable(L, -2);
+    lua_insert(L, 1);
+    lua_gpio_open(L);
+    lua_settop(L, 1);
     return 1;
 }
-/* Library functions */
-static const struct luaL_Reg lservo_functions[] = {
-    { "version",                       version                           },
-    { NULL,                            NULL                              }
+
+static const struct luaL_Reg gpio_method[] = {
+    /*{"close", lua_gpio_close},
+    {"read", lua_gpio_read},
+    {"write", lua_gpio_write},
+    {"poll", lua_gpio_poll},
+    {"__gc", lua_gpio_close},
+    {"__tostring", lua_gpio_tostring},
+    {"__index", lua_gpio_index},
+    {"__newindex", lua_gpio_newindex},*/
+    {NULL, NULL}
 };
+
 /* Init the Lua Robot Library */
 LUAMOD_API int luaopen_rolibgpio (lua_State *L) {
-    luaL_newlib(L, lservo_functions);
-    lua_pushnumber(L, VERSIONROLIB);
-    lua_setfield(L, -2, "version");
-    return 1;
+  luaL_newmetatable(L, "GPIO");
+
+  const struct luaL_Reg *funcs = (const struct luaL_Reg *)gpio_method;
+  for (; funcs->name != NULL; funcs++) {
+      lua_pushcclosure(L, funcs->func, 0);
+      lua_setfield(L, -2, funcs->name);
+  }
+  lua_pushstring(L, "protected");
+  lua_setfield(L, -2, "__metatable");
+
+  lua_newtable(L);
+  lua_pushcclosure(L, gpio_new, 0);
+  lua_setfield(L, -2, "__call");
+  lua_pushstring(L, "protected");
+  lua_setfield(L, -2, "__metatable");
+  lua_setmetatable(L, -2);
+
+  lua_pushstring(L, "1.0");
+  lua_setfield(L, -2, "version");
+
+  return 1;
 }
