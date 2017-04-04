@@ -37,6 +37,8 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+//Support gpio
+#include "gpio.h"
 
 #ifdef _WIN32
 #define O_NOCTTY 0
@@ -59,13 +61,18 @@
 #endif
 #endif
 
+static int gpio_open(lua_State *L) {
+
+  return 0;
+}
+
 static int gpio_new(lua_State *L) {
     lua_remove(L, 1);
     lua_newuserdata(L, sizeof(gpio_t));
     luaL_getmetatable(L, "GPIO");
     lua_setmetatable(L, -2);
     lua_insert(L, 1);
-    lua_gpio_open(L);
+    gpio_open(L);
     lua_settop(L, 1);
     return 1;
 }
