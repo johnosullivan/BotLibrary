@@ -49,6 +49,10 @@
 #include <termios.h>
 #endif
 
+#define CLEAR     "\x1b[0m"
+#define RED       "\x1b[31m"
+#define GREEN     "\x1b[32m"
+
 /* Defining Vars */
 #undef PI
 #define PI  (l_mathop(3.141592653589793238462643383279502884))
@@ -216,10 +220,27 @@ char const* get_disk(void)
 	snprintf(ret, 255, "%.f GB / %.f GB", free, all);
   return ret;
 }
+
+/*
+---------------------------
+|rolibcore          | yes |
+---------------------------
+|rolibgpio          | yes |
+---------------------------
+|rolibsensor        | yes |
+---------------------------
+|rolibservo         | yes |
+---------------------------
+
+*/
 /* Will list what feature are supported on machine */
 static int sys_info (lua_State *L) {
+    //Creating grid
+    char grid[2048];
+    snprintf(grid, sizeof(grid),"%s---------------------------\n|rolibcore          | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibgpio          | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibsensor        | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibservo         | \x1b[32myes\x1b[0m |\n---------------------------","");
+
     char buffer[2048];
-    snprintf(buffer, sizeof(buffer), "================================\nLibrary Information\n================================\nCore Version: %s\n================================\nSystem Information\n================================\nUser: %s \nHost: %s \nUptime: %s\nOSX: %s\nKernel %s\nShell %s\nCPU: %s \nRAM: %s \nDisk Space: %s \nGPU: %s\n================================\nSupport Chart\n%s\n================================","1.0",get_user(),get_hostname(),get_uptime(),get_osx_version(),get_kernel_version(),get_shell(),get_cpu(),get_ram(), get_disk(),get_gpu(),"grid");
+    snprintf(buffer, sizeof(buffer), "================================\n\x1b[33mLibrary Information\x1b[0m\n================================\nCore Version: %s\n================================\n\x1b[33mSystem Information\x1b[0m\n================================\nUser: %s \nHost: %s \nUptime: %s\nOSX: %s\nKernel %s\nShell %s\nCPU: %s \nRAM: %s \nDisk Space: %s \nGPU: %s\n================================\n\x1b[33mSupport Chart\x1b[0m \n%s\n================================","1.0",get_user(),get_hostname(),get_uptime(),get_osx_version(),get_kernel_version(),get_shell(),get_cpu(),get_ram(), get_disk(),get_gpu(),grid);
     lua_pushstring(L, buffer);
     return 1;
 }
