@@ -44,4 +44,13 @@ typedef enum gpio_direction {
     GPIO_DIRECTION_PRESERVE,
 } gpio_direction_t;
 
+//Opens the gpio pin and set direction
+int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction);
+//Read the current value at pin
+int pin_read(gpio_t *gpio, bool *value);
+//Writes to pin in the gpio object
+int pin_write(gpio_t *gpio, bool value);
+//Closes the pin
+int pin_close(gpio_t *gpio);
+
 #endif

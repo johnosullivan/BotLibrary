@@ -37,6 +37,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/utsname.h>
+#include <sys/sysctl.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 #ifdef _WIN32
 #define O_NOCTTY 0
@@ -59,21 +64,169 @@
 #endif
 #endif
 
-
-
-
-
-
-
+/* get username */
+char const* get_user(void)
+{
+  return getlogin();
+}
+/* get loalhost name */
+char const* get_hostname(void)
+{
+  static char ret[255];
+  if (gethostname(ret, 255))
+  {
+    return NULL;
+  }
+  return ret;
+}
+/* gets the operating system */
+char const* get_osx_version(void)
+{
+	FILE* fp;
+	int versionlen;
+	char version[64];
+	size_t osversionlen;
+	char osversion[64];
+	static char ret[255];
+	fp = popen("/usr/bin/sw_vers -productVersion", "r");
+	if (!fp) return NULL;
+	if (!fgets(version, sizeof(version) - 1, fp))
+  {
+    pclose(fp);
+    return NULL;
+  }
+	pclose(fp);
+  osversionlen = sizeof(osversion);
+  if (sysctlbyname("kern.osversion", osversion, &osversionlen, NULL, 0)) {
+    return NULL;
+  }
+  versionlen = strlen(version);
+  snprintf(ret, 255, "%.*s (%s)", versionlen - 1, version, osversion);
+  return ret;
+}
+/* gets the kernal name */
+char const* get_kernel_version(void)
+{
+  static char ret[255];
+  struct utsname sys;
+  uname(&sys);
+  if ((strlen(sys.sysname) + strlen(sys.version)) > 255) {
+    return NULL;
+  }
+  snprintf(ret, 255, "%s %s", sys.sysname, sys.release);
+  return ret;
+}
+/* Gets the uptime */
+char const* get_uptime(void)
+{
+  static char ret[255];
+  struct timeval boottime;
+  size_t len = sizeof(boottime);
+  time_t diff;
+  time_t days, hours, minutes;
+  if (sysctlbyname("kern.boottime", &boottime, &len, NULL, 0)) {
+        return NULL;
+  }
+  diff = (time_t)difftime(time(NULL), boottime.tv_sec);
+  days = diff / (60*60*24);
+	hours = (diff / (60*60)) % 24;
+	minutes = (diff / 60) % 60;
+	snprintf(ret, 255, "%ld days, %ld hours and %ld minutes", days, hours, minutes);
+  return ret;
+}
+/* Gets the shell name */
+char const* get_shell(void)
+{
+  static char ret[255];
+  char* env;
+  env = getenv("SHELL");
+  memcpy(ret, env, strlen(env));
+  return ret;
+}
+/* Get terminl name */
+char const* get_terminal(void)
+{
+  static char ret[255];
+  char* env;
+  env = getenv("TERM");
+  memcpy(ret, env, strlen(env));
+  return ret;
+}
+/* Gets the CPU type */
+char const* get_cpu(void)
+{
+  static char ret[255];
+  size_t len = 255;
+  if (sysctlbyname("machdep.cpu.brand_string", ret, &len, NULL, 0)) {
+    return NULL;
+  }
+  return ret;
+}
+/* Gets the GPU type */
+char const* get_gpu(void)
+{
+  static char ret[255];
+  FILE* fp;
+  char output[255];
+  size_t i, len;
+  char* cmd = "system_profiler -detailLevel mini SPDisplaysDataType 2> /dev/null | grep \"Chipset Model:\" | sed -e 's/Chipset Model://' | sed -e 's/^[ \\t ]*//'";
+  fp = popen(cmd, "r");
+	if (!fp) return NULL;
+	if ((len = fread(output, 1, sizeof(output) - 1, fp)) == 0)
+  {
+      pclose(fp);
+      return NULL;
+  }
+	pclose(fp);
+  output[len] = '\0';
+  len = strlen(output);
+  memcpy(ret, output, len);
+  for (i = 0; i < len; i++)
+  {
+      if (ret[i] == '\n')
+      {
+          ret[i] = ',';
+      }
+  }
+  ret[len - 1] = '\0';
+  return ret;
+}
+/* Gets the RAM */
+char const* get_ram(void)
+{
+  static char ret[255];
+  int64_t mem;
+  size_t len = 255;
+  if (sysctlbyname("hw.memsize", &mem, &len, NULL, 0)) {
+    return NULL;
+  }
+  mem = mem / 1024 / 1024 / 1024;
+  snprintf(ret, 255, "%lld GiB", mem);
+  return ret;
+}
+/* Gets the disk size */
+char const* get_disk(void)
+{
+  static char ret[255];
+  struct statfs fs;
+  double free, all;
+	statfs("/", &fs);
+	free = (fs.f_bsize * fs.f_bfree) / 1000 / 1000 / 1000;
+	all = (fs.f_bsize * fs.f_blocks) / 1000 / 1000 / 1000;
+	snprintf(ret, 255, "%.f GB / %.f GB", free, all);
+  return ret;
+}
 /* Will list what feature are supported on machine */
-static int version (lua_State *L) {
-    lua_pushnumber(L, VERSIONROLIB);
+static int sys_info (lua_State *L) {
+    char buffer[2048];
+    snprintf(buffer, sizeof(buffer), "================================\nLibrary Information\n================================\nCore Version: %s\n================================\nSystem Information\n================================\nUser: %s \nHost: %s \nUptime: %s\nOSX: %s\nKernel %s\nShell %s\nCPU: %s \nRAM: %s \nDisk Space: %s \nGPU: %s\n================================\nSupport Chart\n%s\n================================","1.0",get_user(),get_hostname(),get_uptime(),get_osx_version(),get_kernel_version(),get_shell(),get_cpu(),get_ram(), get_disk(),get_gpu(),"grid");
+    lua_pushstring(L, buffer);
     return 1;
 }
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
-    { "version",                       version                           },
-    { NULL,                            NULL                              }
+    { "sys_info", sys_info},
+    { NULL, NULL }
 };
 /* Init the Lua Robot Library */
 LUAMOD_API int luaopen_rolibcore (lua_State *L) {

@@ -61,8 +61,21 @@
 #endif
 #endif
 
-static int gpio_open(lua_State *L) {
+static const char *gpio_direction_to_string[] = {
+    [GPIO_DIRECTION_IN]         = "in",
+    [GPIO_DIRECTION_OUT]        = "out",
+    [GPIO_DIRECTION_OUT_LOW]    = "low",
+    [GPIO_DIRECTION_OUT_HIGH]   = "high",
+};
 
+static const char *gpio_edge_to_string[] = {
+    [GPIO_EDGE_NONE]      = "none",
+    [GPIO_EDGE_RISING]    = "rising",
+    [GPIO_EDGE_FALLING]   = "falling",
+    [GPIO_EDGE_BOTH]      = "both",
+};
+
+static int gpio_open(lua_State *L) {
   return 0;
 }
 
@@ -77,15 +90,43 @@ static int gpio_new(lua_State *L) {
     return 1;
 }
 
+static void gpio_checktype(lua_State *L, int index, int type) {
+
+}
+static int gpio_newindex(lua_State *L) {
+  return 0;
+}
+static int gpio_index(lua_State *L) {
+  return 0;
+}
+static int gpio_close(lua_State *L) {
+  return 0;
+}
+static int gpio_poll(lua_State *L) {
+  return 0;
+}
+static int gpio_write(lua_State *L) {
+  return 0;
+}
+static int gpio_read(lua_State *L) {
+  return 0;
+}
+
+static int gpio_tostring(lua_State *L) {
+  gpio_t *gpio;
+  lua_pushstring(L, "GPIO Object");
+  return 1;
+}
+
 static const struct luaL_Reg gpio_method[] = {
-    /*{"close", lua_gpio_close},
-    {"read", lua_gpio_read},
-    {"write", lua_gpio_write},
-    {"poll", lua_gpio_poll},
-    {"__gc", lua_gpio_close},
-    {"__tostring", lua_gpio_tostring},
-    {"__index", lua_gpio_index},
-    {"__newindex", lua_gpio_newindex},*/
+    {"close", gpio_close},
+    {"read", gpio_read},
+    {"write", gpio_write},
+    {"poll", gpio_poll},
+    {"__gc", gpio_close},
+    {"__tostring", gpio_tostring},
+    {"__index", gpio_index},
+    {"__newindex", gpio_newindex},
     {NULL, NULL}
 };
 

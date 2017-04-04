@@ -1,4 +1,4 @@
-BASIC_CFLAGS = -Wall -O3 -fPIC -g -std=c99 -pedantic -Ilua_headers
+BASIC_CFLAGS = -Wall -O3 -fPIC -g -std=c99 -pedantic -Ilua_headers -DCOLOR16_SUPPORT
 
 ALL_CFLAGS = $(BASIC_CFLAGS) $(CFLAGS)
 
@@ -23,7 +23,7 @@ all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so rolib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o src/servo/maestro/maestro.o
+OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o src/servo/maestro/maestro.o src/gpio/gpio.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -79,6 +79,9 @@ tests_lua:
 
 tests_py:
 	python tests/python/example1.py
+
+test_lua_sys:
+	lua tests/lua/sys.lua
 
 reset:
 	./reset.sh
