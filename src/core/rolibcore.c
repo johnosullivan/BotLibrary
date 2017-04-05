@@ -151,12 +151,8 @@ char const* get_operating_version(void)
   versionlen = strlen(version);
   snprintf(ret, 255, "%.*s (%s)", versionlen - 1, version, osversion);
   #elif __linux__
-    // linux
-  int result;
-	struct utsname sys_info;
-	result = uname(&sys_info);
-  return sys_info.version;
-  #elif __unix__ // all unices not caught above
+
+  #elif __unix__ 
     // Unix
   #elif defined(_POSIX_VERSION)
     // POSIX
