@@ -71,6 +71,7 @@
 /* get username */
 char const* get_user(void)
 {
+  static char ret[255];
   #ifdef _WIN32
    //define something for Windows (32-bit and 64-bit, this part is common)
    #ifdef _WIN64
@@ -89,6 +90,7 @@ char const* get_user(void)
   #else
   #   error "Unknown compiler"
   #endif
+  return ret;
 }
 /* get loalhost name */
 char const* get_hostname(void)
