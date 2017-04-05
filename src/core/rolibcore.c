@@ -71,27 +71,69 @@
 /* get username */
 char const* get_user(void)
 {
-  return getlogin();
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
+    return getlogin();
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
 }
 /* get loalhost name */
 char const* get_hostname(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   if (gethostname(ret, 255))
   {
     return NULL;
   }
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* gets the operating system */
 char const* get_osx_version(void)
 {
-	FILE* fp;
+  static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
+  FILE* fp;
 	int versionlen;
 	char version[64];
 	size_t osversionlen;
 	char osversion[64];
-	static char ret[255];
 	fp = popen("/usr/bin/sw_vers -productVersion", "r");
 	if (!fp) return NULL;
 	if (!fgets(version, sizeof(version) - 1, fp))
@@ -106,24 +148,58 @@ char const* get_osx_version(void)
   }
   versionlen = strlen(version);
   snprintf(ret, 255, "%.*s (%s)", versionlen - 1, version, osversion);
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* gets the kernal name */
 char const* get_kernel_version(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   struct utsname sys;
   uname(&sys);
   if ((strlen(sys.sysname) + strlen(sys.version)) > 255) {
     return NULL;
   }
   snprintf(ret, 255, "%s %s", sys.sysname, sys.release);
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the uptime */
 char const* get_uptime(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   struct timeval boottime;
   size_t len = sizeof(boottime);
   time_t diff;
@@ -136,40 +212,108 @@ char const* get_uptime(void)
 	hours = (diff / (60*60)) % 24;
 	minutes = (diff / 60) % 60;
 	snprintf(ret, 255, "%ld days, %ld hours and %ld minutes", days, hours, minutes);
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the shell name */
 char const* get_shell(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   char* env;
   env = getenv("SHELL");
   memcpy(ret, env, strlen(env));
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Get terminl name */
 char const* get_terminal(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   char* env;
   env = getenv("TERM");
   memcpy(ret, env, strlen(env));
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the CPU type */
 char const* get_cpu(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   size_t len = 255;
   if (sysctlbyname("machdep.cpu.brand_string", ret, &len, NULL, 0)) {
     return NULL;
   }
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the GPU type */
 char const* get_gpu(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   FILE* fp;
   char output[255];
   size_t i, len;
@@ -193,12 +337,29 @@ char const* get_gpu(void)
       }
   }
   ret[len - 1] = '\0';
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the RAM */
 char const* get_ram(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   int64_t mem;
   size_t len = 255;
   if (sysctlbyname("hw.memsize", &mem, &len, NULL, 0)) {
@@ -206,18 +367,44 @@ char const* get_ram(void)
   }
   mem = mem / 1024 / 1024 / 1024;
   snprintf(ret, 255, "%lld GiB", mem);
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Gets the disk size */
 char const* get_disk(void)
 {
   static char ret[255];
+  #ifdef _WIN32
+   //define something for Windows (32-bit and 64-bit, this part is common)
+   #ifdef _WIN64
+      //define something for Windows (64-bit only)
+   #else
+      //define something for Windows (32-bit only)
+   #endif
+  #elif __APPLE__
   struct statfs fs;
   double free, all;
 	statfs("/", &fs);
 	free = (fs.f_bsize * fs.f_bfree) / 1000 / 1000 / 1000;
 	all = (fs.f_bsize * fs.f_blocks) / 1000 / 1000 / 1000;
 	snprintf(ret, 255, "%.f GB / %.f GB", free, all);
+  #elif __linux__
+    // linux
+  #elif __unix__ // all unices not caught above
+    // Unix
+  #elif defined(_POSIX_VERSION)
+    // POSIX
+  #else
+  #   error "Unknown compiler"
+  #endif
   return ret;
 }
 /* Will list what feature are supported on machine */
