@@ -220,17 +220,6 @@ char const* get_disk(void)
 	snprintf(ret, 255, "%.f GB / %.f GB", free, all);
   return ret;
 }
-/*
----------------------------
-|rolibcore          | yes |
----------------------------
-|rolibgpio          | yes |
----------------------------
-|rolibsensor        | yes |
----------------------------
-|rolibservo         | yes |
----------------------------
-*/
 /* Will list what feature are supported on machine */
 static int sys_info (lua_State *L) {
     //Creating grid

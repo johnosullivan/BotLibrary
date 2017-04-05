@@ -81,6 +81,7 @@ tests_py:
 	python tests/python/example1.py
 
 test_lua_sys:
+	clear
 	lua tests/lua/sys.lua
 
 reset:
