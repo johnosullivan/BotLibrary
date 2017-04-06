@@ -61,6 +61,11 @@
 #endif
 #endif
 
+/*
+* Background reading on the linux kernal gpio pins.
+* https://www.kernel.org/doc/Documentation/gpio/sysfs.txt
+*/
+
 static const char *gpio_direction_to_string[] = {
     [GPIO_DIRECTION_IN]         = "in",
     [GPIO_DIRECTION_OUT]        = "out",

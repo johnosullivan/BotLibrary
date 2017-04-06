@@ -39,7 +39,7 @@ rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestr
 rolibsensor.so: src/sensor/rolibsensor.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibgpio.so: src/gpio/rolibgpio.o
+rolibgpio.so: src/gpio/rolibgpio.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 rolib.so: src/rolib.o src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o
