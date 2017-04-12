@@ -28,14 +28,14 @@ typedef struct gpio_handle {
         char errmsg[96];
     } error;
 } gpio_t;
-
+//Type of detections for edges
 typedef enum gpio_edge {
     GPIO_EDGE_NONE,
     GPIO_EDGE_RISING,
     GPIO_EDGE_FALLING,
     GPIO_EDGE_BOTH
 } gpio_edge_t;
-
+//Type of pin directions
 typedef enum gpio_direction {
     GPIO_DIRECTION_IN,
     GPIO_DIRECTION_OUT,
@@ -44,6 +44,8 @@ typedef enum gpio_direction {
     GPIO_DIRECTION_PRESERVE,
 } gpio_direction_t;
 
+//Takes object to string
+int pin_to_string(gpio_t *gpio, char *str, size_t len);
 //Opens the gpio pin and set direction
 int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction);
 //Read the current value at pin

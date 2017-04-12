@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
@@ -32,6 +31,12 @@ static const char *gpio_edge_to_string[] = {
 * Background reading on the linux kernal gpio pins.
 * https://www.kernel.org/doc/Documentation/gpio/sysfs.txt
 */
+int pin_to_string(gpio_t *gpio, char *str, size_t len) {
+    gpio_direction_t direction;
+    const char *direction_str;
+    gpio_edge_t edge;
+    const char *edge_str;
+}
 //Opens the pin with direction
 int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction) {
     //Check if valid direction
@@ -67,6 +72,23 @@ int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction) {
         }
         if (stat(gpio_path, &stat_buf) < 0) {
           //Check pin direction exists
+          return 0;
+        }
+    }
+    // Not preserving  direction
+    if (direction != GPIO_DIRECTION_PRESERVE) {
+        //Writing the direction
+        snprintf(gpio_path, sizeof(gpio_path), "/sys/class/gpio/gpio%d/direction", pin);
+        if ((fd = open(gpio_path, O_WRONLY)) < 0) {
+          //Opening
+        }
+        if (write(fd, gpio_direction_to_string[direction], strlen(gpio_direction_to_string[direction])+1) < 0) {
+          //Writing pin
+          close(fd);
+          return 0;
+        }
+        if (close(fd) < 0) {
+          //Close
           return 0;
         }
     }
