@@ -10,6 +10,7 @@ INSTALL_DATA = $(INSTALL) -m 0644
 LUA_VERSION = 5.3
 MODULE_NAME = rolibcore
 BIN=./bin/
+COMDOC=./rolibdoc/
 
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 
@@ -50,6 +51,8 @@ maestro.so: src/servo/maestro/maestro.o
 
 install_lua: all
 	@echo "Installing"
+	mkdir -p $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
+	cp -r src/component_docs/* $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
 	$(INSTALL_DATA) bin/rolibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(INSTALL_DATA) bin/rolibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
@@ -67,6 +70,7 @@ config:
 
 uninstall:
 	@echo "Uninstalling"
+	rm -rf $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibdoc
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so

@@ -63,7 +63,28 @@
 #endif
 #endif
 
-
+char* readfile(char *filename)
+{
+   char *buffer = NULL;
+   int string_size, read_size;
+   FILE *handler = fopen(filename, "r");
+   if (handler)
+   {
+       fseek(handler, 0, SEEK_END);
+       string_size = ftell(handler);
+       rewind(handler);
+       buffer = (char*) malloc(sizeof(char) * (string_size + 1) );
+       read_size = fread(buffer, sizeof(char), string_size, handler);
+       buffer[string_size] = '\0';
+       if (string_size != read_size)
+       {
+           free(buffer);
+           buffer = NULL;
+       }
+       fclose(handler);
+    }
+    return buffer;
+}
 
 // Creates a new servo object
 static int lservo_new(lua_State *L)
@@ -167,12 +188,31 @@ static int lservoboradconnection(lua_State *L) {
     lua_pushinteger(L, fd);
     return 1;
 }
+// Get info per Servo
+static int lservo_linfo(lua_State *L)
+{
+
+  servo_userdata_t *so;
+  const char *type;
+  so = (servo_userdata_t *)luaL_checkudata(L, 1, "Servo");
+  type = lua_pushstring(L, so->type);
+  if (strcmp(type, MAESTRO) == 0) {
+    char *string = readfile("/usr/local/lib/lua/5.3/rolibdoc/maestro.md");
+    if (string)
+    {
+      lua_pushfstring(L,string);
+    }
+  }
+
+  return 1;
+}
 /* Servo functions */
 static const struct luaL_Reg lservo_methods[] = {
     { "getchannel",  lservo_getchannel},
     { "gettarget",   lservo_gettarget },
     { "getname",     lservo_getname   },
     { "settarget",   lservo_setTarget },
+    { "info",        lservo_linfo     },
     { "__gc",        lservo_destroy   },
     { "__tostring",  lservo_tostring  },
     { NULL,          NULL             },

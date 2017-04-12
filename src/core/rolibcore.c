@@ -152,7 +152,7 @@ char const* get_operating_version(void)
   snprintf(ret, 255, "%.*s (%s)", versionlen - 1, version, osversion);
   #elif __linux__
 
-  #elif __unix__ 
+  #elif __unix__
     // Unix
   #elif defined(_POSIX_VERSION)
     // POSIX
