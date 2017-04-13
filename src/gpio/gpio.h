@@ -44,15 +44,21 @@ typedef enum gpio_direction {
     GPIO_DIRECTION_PRESERVE,
 } gpio_direction_t;
 
-//Takes object to string
-int pin_to_string(gpio_t *gpio, char *str, size_t len);
-//Opens the gpio pin and set direction
+
 int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction);
-//Read the current value at pin
 int pin_read(gpio_t *gpio, bool *value);
-//Writes to pin in the gpio object
 int pin_write(gpio_t *gpio, bool value);
-//Closes the pin
 int pin_close(gpio_t *gpio);
+int pin_poll(gpio_t *gpio, int timeout_ms);
+int pin_interrupts(gpio_t *gpio, bool *supported);
+int pin_get_direction(gpio_t *gpio, gpio_direction_t *direction);
+int pin_get_edge(gpio_t *gpio, gpio_edge_t *edge);
+int pin_set_direction(gpio_t *gpio, gpio_direction_t direction);
+int pin_set_edge(gpio_t *gpio, gpio_edge_t edge);
+unsigned int pin(gpio_t *gpio);
+int pin_fd(gpio_t *gpio);
+int pin_tostring(gpio_t *gpio, char *str, size_t len);
+int pin_errno(gpio_t *gpio);
+const char *pin_errmsg(gpio_t *gpio);
 
 #endif
