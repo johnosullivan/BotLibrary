@@ -98,7 +98,7 @@ int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction) {
         if (write(fd, gpio_direction_to_string[direction], strlen(gpio_direction_to_string[direction])+1) < 0) {
           int errsv = errno;
           close(fd);
-          return _gpio_error(gpio, GPIO_ERROR_SET_DIRECTION, errsv, "Configuring GPIO: writing 'direction'");
+          return pin_status(gpio, GPIO_ERROR_SET_DIRECTION, errsv, "Configuring GPIO: writing 'direction'");
         }
         if (close(fd) < 0) {
           //Close
