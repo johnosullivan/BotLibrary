@@ -21,8 +21,8 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibsensor_c
-#define VERSIONROLIB (l_mathop(1.0))
+#define lbotlibsensor_c
+#define VERSIONbotlib (l_mathop(1.0))
 
 /* Linking Frameworks */
 #include <lua.h>
@@ -265,13 +265,13 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL,          NULL                }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibsensor (lua_State *L) {
+LUAMOD_API int luaopen_botlibsensor (lua_State *L) {
     luaL_newmetatable(L, "Sensor");
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
     luaL_setfuncs(L, lservo_methods, 0);
     luaL_newlib(L, lservo_functions);
-    lua_pushnumber(L, VERSIONROLIB);
+    lua_pushnumber(L, VERSIONbotlib);
     lua_setfield(L, -2, "version");
     return 1;
 }

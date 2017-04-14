@@ -12,7 +12,7 @@ end
 sbc = r.sbc(port);
 
 -- Create a new servo object
-servo = r.create_servo(0,"RL#1","maestro",2000,sbc)
+servo = r.new(0,"RL#1","maestro",2000,sbc)
 
 -- Pause for 2 seconds
 sleep(2)
