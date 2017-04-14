@@ -37,7 +37,11 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#ifdef __APPLE__
 #include <time.h>
+#elif __linux__
+#include <sys/time.h>
+#endif
 #include <sys/utsname.h>
 #include <sys/sysctl.h>
 #include <sys/param.h>
