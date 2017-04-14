@@ -6,7 +6,6 @@
 //variables types and bool library
 #include <stddef.h>
 #include <stdbool.h>
-
 enum gpio_error_code {
     GPIO_ERROR_ARG = -1,
     GPIO_ERROR_EXPORT = -2,
@@ -18,7 +17,7 @@ enum gpio_error_code {
     GPIO_ERROR_SET_EDGE = -8,
     GPIO_ERROR_GET_EDGE = -9,
 };
-
+//gpio data structure
 typedef struct gpio_handle {
     unsigned int pin;
     int fd;
@@ -43,7 +42,6 @@ typedef enum gpio_direction {
     GPIO_DIRECTION_OUT_HIGH,
     GPIO_DIRECTION_PRESERVE,
 } gpio_direction_t;
-
 
 int pin_open(gpio_t *gpio, unsigned int pin, gpio_direction_t direction);
 int pin_read(gpio_t *gpio, bool *value);

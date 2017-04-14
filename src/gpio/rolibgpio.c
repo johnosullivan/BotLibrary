@@ -152,7 +152,7 @@ static int gpio_open(lua_State *L) {
     else if (strcmp(str_direction, "preserve") == 0)
         direction = GPIO_DIRECTION_PRESERVE;
     else
-        return pin_error(L, GPIO_ERROR_ARG, 0, "Error: invalid direction, should be 'in', 'out', 'low', 'high', 'preserve'");
+        return pin_error(L, GPIO_ERROR_ARG, 0, "Error: Invalid Direction");
 
     if ((ret = pin_open(gpio, pin, direction)) < 0)
         return pin_error(L, ret, pin_errno(gpio), pin_errmsg(gpio));

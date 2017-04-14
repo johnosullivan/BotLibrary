@@ -29,6 +29,7 @@ static const char *gpio_edge_to_string[] = {
 /*
 * Background reading on the linux kernal gpio pins.
 * https://www.kernel.org/doc/Documentation/gpio/sysfs.txt
+* http://elinux.org/RPi_GPIO_Code_Samples
 */
 
 const char *pin_errmsg(gpio_t *gpio) { return gpio->error.errmsg; }
@@ -38,7 +39,7 @@ int pin_fd(gpio_t *gpio) { return gpio->fd; }
 
 static int pin_status(struct gpio_handle *pin, int code, int c_errno, const char *args, ...) {
     va_list ap;
-    pin->error.c_errno = c_errno;
+    pin->error.c_errno = c_errno; 
     va_start(ap, args);
     vsnprintf(pin->error.errmsg, sizeof(pin->error.errmsg), args, ap);
     va_end(ap);

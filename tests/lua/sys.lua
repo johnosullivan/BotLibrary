@@ -1,7 +1,6 @@
 #!/usr/bin/lua
 
-core = require("rolibcore")
 
-print(core.sys_info())
+local GPIO = require('rolib').GPIO
 
-os.exit()
+local gpio_in = GPIO(10, "in")
