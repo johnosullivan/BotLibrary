@@ -96,7 +96,7 @@ static int pin_error(lua_State *L, enum gpio_error_code code, int c_errno, const
     lua_pushstring(L, message);
     lua_setfield(L, -2, "message");
     va_end(ap);
-    luaL_getmetatable(L, "GPIO.Error");
+    luaL_getmetatable(L, "rolib.error");
     lua_setmetatable(L, -2);
     return lua_error(L);
 }
