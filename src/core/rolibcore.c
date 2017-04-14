@@ -57,6 +57,8 @@
 #define RED       "\x1b[31m"
 #define GREEN     "\x1b[32m"
 
+#include "../gpio/gpio.h"
+
 /* Defining Vars */
 #undef PI
 #define PI  (l_mathop(3.141592653589793238462643383279502884))
@@ -449,10 +451,75 @@ static int sys_info (lua_State *L) {
     lua_pushstring(L, buffer);
     return 1;
 }
+
+static int lua_read (lua_State *L) {
+
+    gpio_t gpio_in, gpio_out;
+    double start, stop;
+
+    if (pin_open(&gpio_in, 24, GPIO_DIRECTION_IN) < 0) {
+      fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_in));
+      exit(1);
+    }
+
+    if (pin_open(&gpio_out, 18, GPIO_DIRECTION_OUT) < 0) {
+      fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_out));
+      exit(1);
+    }
+
+    if (pin_write(&gpio_out, true) < 0) {
+        fprintf(stderr, "pin_write(): %s\n", pin_errmsg(&gpio_out));
+        exit(1);
+    }
+
+    sleep((unsigned int)0.00001);
+
+    if (pin_write(&gpio_out, false) < 0) {
+        fprintf(stderr, "pin_write(): %s\n", pin_errmsg(&gpio_out));
+        exit(1);
+    }
+
+
+    bool echo = false;
+    start = timeout_gettime();
+    stop = timeout_gettime();
+
+
+    /*while (echo == false) {
+      start = timeout_gettime();
+      if (pin_read(&gpio_in, &echo) < 0) {
+        fprintf(stderr, "pin_read(): %s\n", pin_errmsg(&gpio_in));
+        exit(1);
+      }
+    }*/;
+
+    while (echo == true) {
+      stop = timeout_gettime();
+      if (pin_read(&gpio_in, &echo) < 0) {
+        fprintf(stderr, "pin_read(): %s\n", pin_errmsg(&gpio_in));
+        exit(1);
+      }
+    }
+
+
+    double timeelapsed = stop - start;
+
+    double distance = (timeelapsed * 34300) / 2;
+
+
+    pin_close(&gpio_in);
+    pin_close(&gpio_out);
+
+    lua_pushnumber(L, distance);
+
+    return 1;
+}
+
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
     { "sys_info", sys_info},
     { "gettime", lua_gettime},
+    { "read", lua_read},
     { NULL, NULL }
 };
 /* Init the Lua Robot Library */

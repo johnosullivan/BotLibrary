@@ -31,7 +31,7 @@ $(OBJECTS): $(LIB_H)
 $(OBJECTS): %.o: %.c
 	$(CC) -o $*.o -c $(ALL_CFLAGS) $<
 
-rolibcore.so: src/core/rolibcore.o
+rolibcore.so: src/core/rolibcore.o src/gpio/gpio.o
 	 $(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestro.o
