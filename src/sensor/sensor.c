@@ -3,7 +3,7 @@
 #include "sensor.h"
 
 /* Functions for the servo_t structure data type. */
-sensor_t *sensor_create(int pin1,int pin2,int pin3,int pin4,int pin5,int pin6,int pin7,int pin8,int pin9,int pin10)
+sensor_t *sensor_create(gpio_t pin1,gpio_t pin2,gpio_t pin3,gpio_t pin4,gpio_t pin5,gpio_t pin6,gpio_t pin7,gpio_t pin8,gpio_t pin9,gpio_t pin10)
 {
     sensor_t *s;
     s = malloc(sizeof(*s));
@@ -24,9 +24,8 @@ void sensor_destroy(sensor_t *s)
     if (s == NULL) return;
     free(s);
 }
-int sensor_get_pin(sensor_t *s,int pin)
+gpio_t sensor_get_pin(sensor_t *s,int pin)
 {
-    if (s == NULL) return 0;
     if (pin == 1) { return s->pin1; }
     if (pin == 2) { return s->pin2; }
     if (pin == 3) { return s->pin3; }
@@ -37,5 +36,5 @@ int sensor_get_pin(sensor_t *s,int pin)
     if (pin == 8) { return s->pin8; }
     if (pin == 9) { return s->pin9; }
     if (pin == 10) { return s->pin10; }
-    return 0;
+    return s->pin1;
 }

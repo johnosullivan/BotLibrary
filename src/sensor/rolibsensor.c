@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+
 #ifdef __APPLE__
 #include <time.h>
 #elif __linux__
@@ -109,7 +110,19 @@ static int lsensor_new(lua_State *L)
     if (strcmp(type,HCSR04)==0) {
       int trigger = luaL_checknumber(L, 3);
       int echo = luaL_checknumber(L, 4);
-      so->s = sensor_create(trigger,echo,0,0,0,0,0,0,0,0);
+
+      gpio_t gpio_in, gpio_out;
+      if (pin_open(&gpio_in, echo, GPIO_DIRECTION_IN) < 0) {
+        fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_in));
+        exit(1);
+      }
+
+      if (pin_open(&gpio_out, trigger, GPIO_DIRECTION_OUT) < 0) {
+        fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_out));
+        exit(1);
+      }
+
+      so->s = sensor_create(gpio_out,gpio_in,gpio_in,gpio_in,gpio_in,gpio_in,gpio_in,gpio_in,gpio_in,gpio_in);
     }
 
 
@@ -127,18 +140,9 @@ static int lsensor_read(lua_State *L)
     type = lua_pushstring(L, so->type);
 
     if (strcmp(so->type,HCSR04)==0) {
-      gpio_t gpio_in, gpio_out;
+      gpio_t gpio_in = sensor_get_pin(so->s,2);
+      gpio_t gpio_out = sensor_get_pin(so->s,1);
       double start, stop;
-
-      if (pin_open(&gpio_in, sensor_get_pin(so->s,2), GPIO_DIRECTION_IN) < 0) {
-        fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_in));
-        exit(1);
-      }
-
-      if (pin_open(&gpio_out, sensor_get_pin(so->s,1), GPIO_DIRECTION_OUT) < 0) {
-        fprintf(stderr, "pin_open(): %s\n", pin_errmsg(&gpio_out));
-        exit(1);
-      }
 
       if (pin_write(&gpio_out, true) < 0) {
           fprintf(stderr, "pin_write(): %s\n", pin_errmsg(&gpio_out));
@@ -174,14 +178,9 @@ static int lsensor_read(lua_State *L)
         }
       }
 
-
       double timeelapsed = stop - start;
 
       double distance = (timeelapsed * 34300) / 2;
-
-
-      pin_close(&gpio_in);
-      pin_close(&gpio_out);
 
       lua_pushnumber(L, distance);
     } else {
@@ -211,7 +210,10 @@ static int lsensor_destroy(lua_State *L)
     so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
 
     if (strcmp(so->type,HCSR04)==0) {
-
+      gpio_t gpio_in = sensor_get_pin(so->s,2);
+      gpio_t gpio_out = sensor_get_pin(so->s,1);
+      pin_close(&gpio_in);
+      pin_close(&gpio_out);
     }
 
     if (so->s != NULL) sensor_destroy(so->s);
