@@ -21,8 +21,8 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibcore_c
-#define VERSIONROLIB (l_mathop(1.0))
+#define lbotlibcore_c
+#define VERSIONbotlib (l_mathop(1.0))
 
 /* Linking Frameworks */
 #include <lua.h>
@@ -444,7 +444,7 @@ static int lua_gettime(lua_State *L)
 static int sys_info (lua_State *L) {
     //Creating grid
     char grid[2048];
-    snprintf(grid, sizeof(grid),"%s---------------------------\n|rolibcore          | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibgpio          | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibsensor        | \x1b[32myes\x1b[0m |\n---------------------------\n|rolibservo         | \x1b[32myes\x1b[0m |\n---------------------------","");
+    snprintf(grid, sizeof(grid),"%s---------------------------\n|botlibcore          | \x1b[32myes\x1b[0m |\n---------------------------\n|botlibgpio          | \x1b[32myes\x1b[0m |\n---------------------------\n|botlibsensor        | \x1b[32myes\x1b[0m |\n---------------------------\n|botlibservo         | \x1b[32myes\x1b[0m |\n---------------------------","");
 
     char buffer[2048];
     snprintf(buffer, sizeof(buffer), "===================================================\n\x1b[33m>>> Library Information <<<\x1b[0m\n===================================================\nCore Version: %s\n===================================================\n\x1b[33m>>> System Information <<<\x1b[0m\n===================================================\nUser: %s \nHost: %s \nUptime: %s\nOSX: %s\nKernel %s\nShell %s\nCPU: %s \nRAM: %s \nDisk Space: %s \nGPU: %s\n===================================================\n\x1b[33m>>> Support Chart <<<\x1b[0m \n%s\n===================================================","1.0",get_user(),get_hostname(),get_uptime(),get_operating_version(),get_kernel_version(),get_shell(),get_cpu(),get_ram(), get_disk(),get_gpu(),grid);
@@ -523,9 +523,9 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL, NULL }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibcore (lua_State *L) {
+LUAMOD_API int luaopen_botlibcore (lua_State *L) {
     luaL_newlib(L, lservo_functions);
-    lua_pushnumber(L, VERSIONROLIB);
+    lua_pushnumber(L, VERSIONbotlib);
     lua_setfield(L, -2, "version");
     return 1;
 }

@@ -21,8 +21,8 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibservo_c
-#define VERSIONROLIB (l_mathop(4.0))
+#define lbotlibservo_c
+#define VERSIONbotlib (l_mathop(1.0))
 
 /* Linking Frameworks */
 #include <lua.h>
@@ -197,7 +197,7 @@ static int lservo_linfo(lua_State *L)
   so = (servo_userdata_t *)luaL_checkudata(L, 1, "Servo");
   type = lua_pushstring(L, so->type);
   if (strcmp(type, MAESTRO) == 0) {
-    char *string = readfile("/usr/local/lib/lua/5.3/rolibdoc/maestro.md");
+    char *string = readfile("/usr/local/lib/lua/5.3/botlibdoc/maestro.md");
     if (string)
     {
       lua_pushfstring(L,string);
@@ -226,13 +226,13 @@ static const struct luaL_Reg lservo_functions[] = {
     { NULL,          NULL                }
 };
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibservo (lua_State *L) {
+LUAMOD_API int luaopen_botlibservo (lua_State *L) {
     luaL_newmetatable(L, "Servo");
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
     luaL_setfuncs(L, lservo_methods, 0);
     luaL_newlib(L, lservo_functions);
-    lua_pushnumber(L, VERSIONROLIB);
+    lua_pushnumber(L, VERSIONbotlib);
     lua_setfield(L, -2, "version");
     return 1;
 }

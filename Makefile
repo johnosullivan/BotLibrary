@@ -8,9 +8,9 @@ INSTALL = install -p
 INSTALL_EXEC = $(INSTALL) -m 0755
 INSTALL_DATA = $(INSTALL) -m 0644
 LUA_VERSION = 5.3
-MODULE_NAME = rolibcore
+MODULE_NAME = botlibcore
 BIN=./bin/
-COMDOC=./rolibdoc/
+COMDOC=./botlibdoc/
 
 uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
 
@@ -20,30 +20,30 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: rolibcore.so rolibservo.so rolibsensor.so rolibgpio.so rolib.so
+all: botlibcore.so botlibservo.so botlibsensor.so botlibgpio.so botlib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/rolibcore.o src/servo/rolibservo.o src/sensor/rolibsensor.o src/servo/servo.o src/gpio/rolibgpio.o src/rolib.o src/servo/maestro/maestro.o src/gpio/gpio.o
+OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o
 
 $(OBJECTS): $(LIB_H)
 
 $(OBJECTS): %.o: %.c
 	$(CC) -o $*.o -c $(ALL_CFLAGS) $<
 
-rolibcore.so: src/core/rolibcore.o src/gpio/gpio.o
+botlibcore.so: src/core/botlibcore.o src/gpio/gpio.o
 	 $(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestro.o src/gpio/gpio.o
+botlibservo.so: src/servo/botlibservo.o src/servo/servo.o src/servo/maestro/maestro.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibsensor.so: src/sensor/rolibsensor.o src/sensor/sensor.o src/gpio/gpio.o
+botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibgpio.so: src/gpio/rolibgpio.o src/gpio/gpio.o
+botlibgpio.so: src/gpio/botlibgpio.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolib.so: src/rolib.o src/core/rolibcore.o src/servo/servo.o src/servo/rolibservo.o src/servo/maestro/maestro.o src/sensor/rolibsensor.o src/sensor/sensor.o src/gpio/rolibgpio.o src/gpio/gpio.o
+botlib.so: src/botlib.o src/core/botlibcore.o src/servo/servo.o src/servo/botlibservo.o src/servo/maestro/maestro.o src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/botlibgpio.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 maestro.so: src/servo/maestro/maestro.o
@@ -53,11 +53,11 @@ install_lua: all
 	@echo "Installing"
 	mkdir -p $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
 	cp -r src/component_docs/* $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
-	$(INSTALL_DATA) bin/rolibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
-	$(INSTALL_DATA) bin/rolibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
-	$(INSTALL_DATA) bin/rolibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
-	$(INSTALL_DATA) bin/rolibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
-	$(INSTALL_DATA) bin/rolib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
+	$(INSTALL_DATA) bin/botlibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibcore.so
+	$(INSTALL_DATA) bin/botlibservo.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibservo.so
+	$(INSTALL_DATA) bin/botlibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
+	$(INSTALL_DATA) bin/botlibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
+	$(INSTALL_DATA) bin/botlib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
 	@echo "Installation Complete"
 
 install_py:
@@ -70,12 +70,12 @@ config:
 
 uninstall:
 	@echo "Uninstalling"
-	rm -rf $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibdoc
-	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibcore.so
-	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibservo.so
-	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibsensor.so
-	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolibgpio.so
-	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/rolib.so
+	rm -rf $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibdoc
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibcore.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibservo.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
 	@echo "Uninstall Complete"
 
 tests_lua:
@@ -99,16 +99,16 @@ tags:
 
 clean:
 	@echo "Cleaning"
-	$(RM) bin/rolibcore.so
-	$(RM) -r bin/rolibservo.so.dSYM
-	$(RM) bin/rolibservo.so
-	$(RM) -r bin/rolibservo.so.dSYM
-	$(RM) bin/rolibsensor.so
-	$(RM) -r bin/rolibsensor.so.dSYM
-	$(RM) bin/rolibgpio.so
-	$(RM) -r bin/rolibgpio.so.dSYM
-	$(RM) bin/rolib.so
-	$(RM) -r bin/rolib.so.dSYM
+	$(RM) bin/botlibcore.so
+	$(RM) -r bin/botlibservo.so.dSYM
+	$(RM) bin/botlibservo.so
+	$(RM) -r bin/botlibservo.so.dSYM
+	$(RM) bin/botlibsensor.so
+	$(RM) -r bin/botlibsensor.so.dSYM
+	$(RM) bin/botlibgpio.so
+	$(RM) -r bin/botlibgpio.so.dSYM
+	$(RM) bin/botlib.so
+	$(RM) -r bin/botlib.so.dSYM
 	$(RM) $(OBJECTS)
 	@echo "Clean Complete"
 

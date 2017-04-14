@@ -22,7 +22,7 @@
  */
 
 #define lrolibsensor_c
-#define VERSIONROLIB (l_mathop(3.0))
+#define VERSIONROLIB (l_mathop(1.0))
 
 /* Linking Frameworks */
 #include <lua.h>

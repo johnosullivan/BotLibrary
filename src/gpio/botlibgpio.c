@@ -21,9 +21,8 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define lrolibgpio_c
-#define VERSIONROLIB (l_mathop(2.0))
-
+#define lbotlibgpio_c
+#define VERSIONbotlib (l_mathop(1.0))
 /* Linking Frameworks */
 #include <lua.h>
 #include <lauxlib.h>
@@ -96,7 +95,7 @@ static int pin_error(lua_State *L, enum gpio_error_code code, int c_errno, const
     lua_pushstring(L, message);
     lua_setfield(L, -2, "message");
     va_end(ap);
-    luaL_getmetatable(L, "rolib.error");
+    luaL_getmetatable(L, "botlib.error");
     lua_setmetatable(L, -2);
     return lua_error(L);
 }
@@ -380,7 +379,7 @@ static const struct luaL_Reg gpio_method[] = {
 };
 
 /* Init the Lua Robot Library */
-LUAMOD_API int luaopen_rolibgpio (lua_State *L) {
+LUAMOD_API int luaopen_botlibgpio (lua_State *L) {
   luaL_newmetatable(L, "GPIO");
   const struct luaL_Reg *funcs = (const struct luaL_Reg *)gpio_method;
   for (; funcs->name != NULL; funcs++) {
@@ -395,7 +394,7 @@ LUAMOD_API int luaopen_rolibgpio (lua_State *L) {
   lua_pushstring(L, "protected");
   lua_setfield(L, -2, "__metatable");
   lua_setmetatable(L, -2);
-  lua_pushstring(L, "1.0");
+  lua_pushnumber(L, VERSIONbotlib);
   lua_setfield(L, -2, "version");
   return 1;
 }
