@@ -34,16 +34,16 @@ $(OBJECTS): %.o: %.c
 rolibcore.so: src/core/rolibcore.o src/gpio/gpio.o
 	 $(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestro.o
+rolibservo.so: src/servo/rolibservo.o src/servo/servo.o src/servo/maestro/maestro.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolibsensor.so: src/sensor/rolibsensor.o
+rolibsensor.so: src/sensor/rolibsensor.o src/sensor/sensor.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 rolibgpio.so: src/gpio/rolibgpio.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-rolib.so: src/rolib.o src/core/rolibcore.o src/servo/servo.o src/servo/rolibservo.o src/servo/maestro/maestro.o src/sensor/rolibsensor.o src/gpio/rolibgpio.o src/gpio/gpio.o
+rolib.so: src/rolib.o src/core/rolibcore.o src/servo/servo.o src/servo/rolibservo.o src/servo/maestro/maestro.o src/sensor/rolibsensor.o src/sensor/sensor.o src/gpio/rolibgpio.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 maestro.so: src/servo/maestro/maestro.o

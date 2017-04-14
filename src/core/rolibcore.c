@@ -417,7 +417,7 @@ char const* get_disk(void)
 }
 //Gettime in ms
 #ifdef _WIN32
-double timeout_gettime(void) {
+double gettime_ms(void) {
     FILETIME ft;
     double t;
     GetSystemTimeAsFileTime(&ft);
@@ -427,7 +427,7 @@ double timeout_gettime(void) {
     return (t - 11644473600.0);
 }
 #else
-double timeout_gettime(void) {
+double gettime_ms(void) {
     struct timeval v;
     gettimeofday(&v, (struct timezone *) NULL);
     /* Unix Epoch time (time since January 1, 1970 (UTC)) */
@@ -437,7 +437,7 @@ double timeout_gettime(void) {
 
 static int lua_gettime(lua_State *L)
 {
-    lua_pushnumber(L, timeout_gettime());
+    lua_pushnumber(L, gettime_ms());
     return 1;
 }
 /* Will list what feature are supported on machine */
@@ -481,20 +481,20 @@ static int lua_read (lua_State *L) {
 
 
     bool echo = false;
-    start = timeout_gettime();
-    stop = timeout_gettime();
+    start = gettime_ms();
+    stop = gettime_ms();
 
 
-    /*while (echo == false) {
-      start = timeout_gettime();
+    while (echo == false) {
+      start = gettime_ms();
       if (pin_read(&gpio_in, &echo) < 0) {
         fprintf(stderr, "pin_read(): %s\n", pin_errmsg(&gpio_in));
         exit(1);
       }
-    }*/;
+    };
 
     while (echo == true) {
-      stop = timeout_gettime();
+      stop = gettime_ms();
       if (pin_read(&gpio_in, &echo) < 0) {
         fprintf(stderr, "pin_read(): %s\n", pin_errmsg(&gpio_in));
         exit(1);

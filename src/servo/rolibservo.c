@@ -220,7 +220,7 @@ static const struct luaL_Reg lservo_methods[] = {
 };
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
-    { "create_servo",   lservo_new       },
+    { "new",   lservo_new       },
     { "sbc",     lservoboradconnection   },
     { NULL,          NULL                },
     { NULL,          NULL                }
