@@ -409,6 +409,31 @@ char const* get_disk(void)
   #endif
   return ret;
 }
+//Gettime in ms
+#ifdef _WIN32
+double timeout_gettime(void) {
+    FILETIME ft;
+    double t;
+    GetSystemTimeAsFileTime(&ft);
+    /* Windows file time (time since January 1, 1601 (UTC)) */
+    t  = ft.dwLowDateTime/1.0e7 + ft.dwHighDateTime*(4294967296.0/1.0e7);
+    /* convert to Unix Epoch time (time since January 1, 1970 (UTC)) */
+    return (t - 11644473600.0);
+}
+#else
+double timeout_gettime(void) {
+    struct timeval v;
+    gettimeofday(&v, (struct timezone *) NULL);
+    /* Unix Epoch time (time since January 1, 1970 (UTC)) */
+    return v.tv_sec + v.tv_usec/1.0e6;
+}
+#endif
+
+static int lua_gettime(lua_State *L)
+{
+    lua_pushnumber(L, timeout_gettime());
+    return 1;
+}
 /* Will list what feature are supported on machine */
 static int sys_info (lua_State *L) {
     //Creating grid
@@ -423,6 +448,7 @@ static int sys_info (lua_State *L) {
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
     { "sys_info", sys_info},
+    { "gettime", lua_gettime},
     { NULL, NULL }
 };
 /* Init the Lua Robot Library */
