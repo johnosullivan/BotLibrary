@@ -28,10 +28,10 @@ LUALIB_API int luaopen_botlib(lua_State *L) {
     lua_setfield(L, -2, "Core");
     luaopen_botlibgpio(L);
     lua_setfield(L, -2, "GPIO");
-    luaopen_botlibsensor(L);
+    /*luaopen_botlibsensor(L);
     lua_setfield(L, -2, "Sensor");
     luaopen_botlibservo(L);
-    lua_setfield(L, -2, "Servo");
+    lua_setfield(L, -2, "Servo");*/
 
 
     return 1;
