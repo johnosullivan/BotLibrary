@@ -38,6 +38,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <pthread.h>
+
+#include "../thpool.h"
+
+#define NUM_THREADS	5
+
 #ifdef __APPLE__
 #include <time.h>
 #elif __linux__
@@ -89,6 +95,7 @@ double timeout_gettime(void) {
     return v.tv_sec + v.tv_usec/1.0e6;
 }
 #endif
+
 // Creates a new servo object
 static int lsensor_new(lua_State *L)
 {
@@ -103,6 +110,7 @@ static int lsensor_new(lua_State *L)
     so->s    = NULL;
     so->name = NULL;
     so->type = NULL;
+    so->callback = NULL;
     luaL_getmetatable(L, "Sensor");
     lua_setmetatable(L, -2);
 
@@ -128,7 +136,7 @@ static int lsensor_new(lua_State *L)
 
     so->name = strdup(name);
     so->type = strdup(type);
-
+    so->callback = NULL;
     return 1;
 }
 
@@ -181,7 +189,7 @@ static int lsensor_read(lua_State *L)
       double timeelapsed = stop - start;
 
       double distance = (timeelapsed * 34300) / 2;
-
+      //double distance = 100.0;
       lua_pushnumber(L, distance);
     } else {
       lua_pushnumber(L, 0);
@@ -230,10 +238,9 @@ static int lsensor_tostring(lua_State *L)
     sensor_userdata_t *so;
     so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
 
-
-
     if (strcmp(so->type,HCSR04)==0) {
-      lua_pushfstring(L, "%s[%s Trigger: %d Echo: %d]",so->name, so->type,sensor_get_pin(so->s,1),sensor_get_pin(so->s,2));
+      lua_pushfstring(L, "%s[%s Trigger: %d Echo: %d] callback: %s",so->name, so->type,sensor_get_pin(so->s,1),sensor_get_pin(so->s,2),so->callback);
+      //lua_pushfstring(L, "%s[%s Trigger: %d Echo: %d] callback: %s",so->name, so->type,12,12,so->callback);
     } else {
       lua_pushfstring(L, "Unknown Sensor");
     }
@@ -243,14 +250,69 @@ static int lsensor_tostring(lua_State *L)
 // Get info per Servo
 static int lsensor_linfo(lua_State *L)
 {
-
   lua_pushfstring(L,"");
-
   return 1;
 }
+
+threadpool thpool;
+int signal_thread = 1;
+int needQuit() { return signal_thread; }
+void signal_off() { signal_thread = 0; }
+void signal_on()  { signal_thread = 1; }
+struct thread_args {
+    sensor_userdata_t *data;
+    lua_State *L;
+};
+void doThread(void *param){
+  struct thread_args *temp = (struct thread_args *)param;
+  while (needQuit()) {
+    sleep(3);
+    lua_State *L = temp->L;
+    printf("Read Sensor: %s\n",temp->data->name);
+    lua_getglobal(L, temp->data->callback);
+    if(!lua_isfunction(L,-1))
+    {
+      lua_pop(L,1);
+    } else {
+      lua_createtable(L, 0, 2);
+      lua_pushstring(L, "sensor");
+      lua_pushstring(L, "");
+      lua_settable(L, -3);
+      lua_pushstring(L, "value");
+      lua_pushnumber(L, 100.0);
+      lua_settable(L, -3);
+      if (lua_pcall(L, 1, 1, 0) != 0) {
+          printf("error running function `f': %s\n",lua_tostring(L, -1));
+      }
+    }
+  }
+}
+static int lsensor_kill(lua_State *L)
+{
+  signal_off();
+	thpool_destroy(thpool);
+  return 1;
+}
+
+static int lsensor_lcallback(lua_State *L)
+{
+  sensor_userdata_t *so;
+  so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
+  const char *callbackName;
+  callbackName = luaL_checkstring(L, 2);
+  so->callback = callbackName;
+
+  /*struct thread_args* args = malloc(sizeof(struct thread_args));
+  args->data = so;
+  args->L = L;
+  thpool_add_work(thpool, (void*)doThread, (void*)args);*/
+  return 1;
+}
+
 /* Servo functions */
 static const struct luaL_Reg lservo_methods[] = {
     { "read",        lsensor_read      },
+    { "setCallBack",        lsensor_lcallback      },
     { "setup",       lsensor_setup     },
     { "info",        lsensor_linfo     },
     { "__gc",        lsensor_destroy   },
@@ -261,11 +323,14 @@ static const struct luaL_Reg lservo_methods[] = {
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
     { "new",   lsensor_new       },
+    { "kill",   lsensor_kill       },
     { NULL,          NULL                },
     { NULL,          NULL                }
 };
 /* Init the Lua Robot Library */
 LUAMOD_API int luaopen_botlibsensor (lua_State *L) {
+    //printf("%s\n", L);
+    thpool = thpool_init(4);
     luaL_newmetatable(L, "Sensor");
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
@@ -275,3 +340,35 @@ LUAMOD_API int luaopen_botlibsensor (lua_State *L) {
     lua_setfield(L, -2, "version");
     return 1;
 }
+/*lua_State *state = L;
+lua_getglobal(state, so->callback);
+if(!lua_isfunction(state,-1))
+{
+    printf("CNFF\n");
+    lua_pop(state,1);
+    return -1;
+} else {
+    printf("FF\n");
+}*/
+
+/*lua_createtable(state, 0, 2);
+
+lua_pushstring(state, "sensor");
+lua_pushstring(state, "sensor_data");
+lua_settable(state, -3);
+
+lua_pushstring(state, "value");
+lua_pushnumber(state, 100.0);
+lua_settable(state, -3);
+
+if (lua_pcall(state, 1, 1, 0) != 0) {
+    printf("error running function `f': %s\n",lua_tostring(state, -1));
+    return -1;
+}*/
+/*if (!lua_isnumber(L, -1)) {
+    printf("function `f' must return a number\n");
+    return -1;
+}
+z = lua_tonumber(L, -1);
+printf("Result: %f\n",z);
+lua_pop(L, 1);*/

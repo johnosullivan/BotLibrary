@@ -24,7 +24,7 @@ all: botlibcore.so botlibservo.so botlibsensor.so botlibgpio.so botlib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o
+OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o src/thpool.o src/threadpool.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -37,7 +37,7 @@ botlibcore.so: src/core/botlibcore.o src/gpio/gpio.o
 botlibservo.so: src/servo/botlibservo.o src/servo/servo.o src/servo/maestro/maestro.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o
+botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o src/thpool.o src/threadpool.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 botlibgpio.so: src/gpio/botlibgpio.o src/gpio/gpio.o

@@ -23,6 +23,7 @@ typedef struct {
     sensor_t *s;
     char      *name;
     char      *type;
+    const char      *callback;
 } sensor_userdata_t;
 
 gpio_t sensor_get_pin(sensor_t *s,int pin);

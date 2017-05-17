@@ -179,16 +179,16 @@ static int gpio_new(lua_State *L) {
 static int gpio_layout(lua_State *L) {
     const char *type;
     type = luaL_checkstring(L, 1);
-    char *layout = "\n";
+    char *layout = "";
     char *rpi3 = "RPi3";
     char *rpi2 = "RPi2";
     char *rpizero = "RPiZero";
     //Check board type
     if ((strcmp(type,rpi3) == 0) || (strcmp(type,rpi2) == 0) || (strcmp(type,rpizero) == 0)) {
-      layout = append(layout,"|==========================================================================|\n");
+      layout = append(layout,"\n|==========================================================================|\n");
       layout = append(layout,"|Pin# | NAME   (Raspberry Pi GPIO Header A+,B+,Zero,Pi2,Pi3)    NAME | Pin#|\n");
       layout = append(layout,"|--------------------------------------------------------------------------|\n");
-      layout = append(layout,"| 01    3.3v DC Power             [\x1B[31m\u25A1|\x1B[31m\u2299\x1B[0m]                  DC Power 5v    02 |\n");
+      layout = append(layout,"| 01    3.3v DC Power             [\x1B[31m\u25A1\x1B[0m|\x1B[31m\u2299\x1B[0m]                  DC Power 5v    02 |\n");
       layout = append(layout,"| 03    GPIO02 (SDA1,I2C)         [\x1B[34m\u2299\x1B[0m|\x1B[31m\u2299\x1B[0m]                  DC Power 5v    04 |\n");
       layout = append(layout,"| 05    GPIO03 (SCL1,I2C)         [\x1B[34m\u2299\x1B[0m|\u2299]                       Ground    06 |\n");
       layout = append(layout,"| 07    GPIO04 (GPIO_GCLK)        [\x1B[32m\u2299\x1B[0m|\x1B[33m\u2299\x1B[0m]                (TXD0) GPIO14    08 |\n");
@@ -211,7 +211,7 @@ static int gpio_layout(lua_State *L) {
       layout = append(layout,"|==========================================================================|\n");
     } else {
       layout = append(layout,"Board Layout Not Found\n");
-      layout = append(layout,"Layout: RPi3, RPi2, RPiZero\n");
+      layout = append(layout,"Layout: RPi3, RPi2, RPiZero");
     }
     lua_pushstring(L,layout);
     return 1;

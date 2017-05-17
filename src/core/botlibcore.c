@@ -515,11 +515,59 @@ static int lua_read (lua_State *L) {
     return 1;
 }
 
+static int lua_table (lua_State *L) {
+
+  /*lua_createtable(L, 0, 4);
+
+lua_pushstring(L, "name");
+lua_pushstring(L, "name1");
+lua_settable(L, -3);
+
+lua_pushstring(L, "date");
+lua_pushstring(L, "date1");
+lua_settable(L, -3);
+
+lua_pushstring(L, "ip");
+lua_pushstring(L, "ip1");
+lua_settable(L, -3);
+
+lua_pushstring(L, "custom");
+lua_pushstring(L, "custon1");
+lua_settable(L, -3);*/
+   double z;
+   lua_getglobal(L, "callback");
+   if(!lua_isfunction(L,-1))
+   {
+       lua_pop(L,1);
+       return -1;
+   }
+   lua_pushnumber(L, 21);   /* push 1st argument */
+   lua_pushnumber(L, 31);   /* push 2nd argument */
+
+   /* do the call (2 arguments, 1 result) */
+   if (lua_pcall(L, 2, 1, 0) != 0) {
+       printf("error running function `f': %s\n",lua_tostring(L, -1));
+       return -1;
+   }
+
+   /* retrieve result */
+   if (!lua_isnumber(L, -1)) {
+       printf("function `f' must return a number\n");
+       return -1;
+   }
+   z = lua_tonumber(L, -1);
+   printf("Result: %f\n",z);
+   lua_pop(L, 1);
+
+    return 1;
+}
+
 /* Library functions */
 static const struct luaL_Reg lservo_functions[] = {
     { "sys_info", sys_info},
     { "gettime", lua_gettime},
     { "read", lua_read},
+    { "test", lua_table},
     { NULL, NULL }
 };
 /* Init the Lua Robot Library */
