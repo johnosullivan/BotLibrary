@@ -24,7 +24,8 @@ all: botlibcore.so botlibservo.so botlibsensor.so botlibgpio.so botlib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o src/thpool.o src/threadpool.o
+OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o src/sensor/sensor.o
+SENSORS += src/sensor/sensors/HCSR04/HCSR04.o
 
 $(OBJECTS): $(LIB_H)
 
@@ -37,7 +38,8 @@ botlibcore.so: src/core/botlibcore.o src/gpio/gpio.o
 botlibservo.so: src/servo/botlibservo.o src/servo/servo.o src/servo/maestro/maestro.o src/gpio/gpio.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
-botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o src/thpool.o src/threadpool.o
+botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o \
+	  src/sensor/sensors/HCSR04/HCSR04.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 botlibgpio.so: src/gpio/botlibgpio.o src/gpio/gpio.o
@@ -50,7 +52,7 @@ maestro.so: src/servo/maestro/maestro.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 install_lua: all
-	@echo "Installing"
+	@echo "[===============================Installing==================================]"
 	mkdir -p $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
 	cp -r src/component_docs/* $(PREFIX)/lib/lua/$(LUA_VERSION)/$(COMDOC)
 	$(INSTALL_DATA) bin/botlibcore.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibcore.so
@@ -58,7 +60,7 @@ install_lua: all
 	$(INSTALL_DATA) bin/botlibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
 	$(INSTALL_DATA) bin/botlibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
 	$(INSTALL_DATA) bin/botlib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
-	@echo "Installation Complete"
+	@echo "[==========================Installation Complete============================]"
 
 install_py:
 	sudo python setup.py install
@@ -69,14 +71,14 @@ config:
 	@echo "Config Complete"
 
 uninstall:
-	@echo "Uninstalling"
+	@echo "[==============================Uninstalling=================================]"
 	rm -rf $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibdoc
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibcore.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibservo.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
-	@echo "Uninstall Complete"
+	@echo "[============================Uninstall Complete=============================]"
 
 tests_lua:
 	lua tests/lua/example1.lua
@@ -98,7 +100,7 @@ tags:
 	find . \( -name .git -type d -prune \) -o \( -name '*.[hc]' -type f -print \) | xargs ctags -a
 
 clean:
-	@echo "Cleaning"
+	@echo "[================================Cleaning===================================]"
 	$(RM) bin/botlibcore.so
 	$(RM) -r bin/botlibservo.so.dSYM
 	$(RM) bin/botlibservo.so
@@ -110,6 +112,7 @@ clean:
 	$(RM) bin/botlib.so
 	$(RM) -r bin/botlib.so.dSYM
 	$(RM) $(OBJECTS)
-	@echo "Clean Complete"
+	$(RM) $(SENSORS)
+	@echo "[=============================Clean Complete================================]"
 
 .PHONY: all install config uninstall clean test tags

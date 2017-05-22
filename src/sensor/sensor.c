@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "sensor.h"
 
+#ifdef _WIN32
+double timeout_gettime(void) {
+    FILETIME ft;
+    double t;
+    GetSystemTimeAsFileTime(&ft);
+    t  = ft.dwLowDateTime/1.0e7 + ft.dwHighDateTime*(4294967296.0/1.0e7);
+    return (t - 11644473600.0);
+}
+#else
+#include <sys/time.h>
+double timeout_gettime(void) {
+    struct timeval v;
+    gettimeofday(&v, (struct timezone *) NULL);
+    return v.tv_sec + v.tv_usec/1.0e6;
+}
+#endif
 /* Functions for the servo_t structure data type. */
 sensor_t *sensor_create(gpio_t pin1,gpio_t pin2,gpio_t pin3,gpio_t pin4,gpio_t pin5,gpio_t pin6,gpio_t pin7,gpio_t pin8,gpio_t pin9,gpio_t pin10)
 {
