@@ -70,9 +70,12 @@
 #include "sensor.h"
 #include "../gpio/gpio.h"
 #include "sensors/HCSR04/HCSR04.h"
+#include "sensors/WAPIRS/WAPIRS.h"
 /* Defining sensor types */
 #define INVALIDSENSOR "Error invalid sensor, please check your sensor's configuration."
-#define HCSR04  "HC-SR04"
+
+#define HCSR04 "HC-SR04"
+#define WAPIRS "WAPIRS"
 
 static int lsensor_new(lua_State *L)
 {
@@ -90,9 +93,8 @@ static int lsensor_new(lua_State *L)
     luaL_getmetatable(L, "Sensor");
 
     lua_setmetatable(L, -2);
-    if (strcmp(type,HCSR04)==0) {
-      so->s = config_HCSR04(luaL_checknumber(L, 3), luaL_checknumber(L, 4));
-    }
+    if (strcmp(type,HCSR04)==0) { so->s = config_HCSR04(luaL_checknumber(L, 3), luaL_checknumber(L, 4)); }
+    if (strcmp(type,WAPIRS)==0) { so->s = config_WAPIRS(luaL_checknumber(L, 3)); }
 
     so->name = strdup(name);
     so->type = strdup(type);
@@ -107,11 +109,9 @@ static int lsensor_read(lua_State *L)
     so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
     type = lua_pushstring(L, so->type);
 
-    if (strcmp(so->type,HCSR04)==0) {
-      lua_pushnumber(L, read_HCSRO4(so->s));
-    } else {
-      lua_pushnumber(L, 0.0);
-    }
+    if (strcmp(so->type,HCSR04)==0) { lua_pushnumber(L, read_HCSRO4(so->s)); }
+    else if (strcmp(so->type,WAPIRS)==0) { lua_pushboolean(L, read_WAPIRS(so->s)); }
+    else { lua_pushnumber(L, 0.0); }
 
     return 1;
 }
@@ -120,9 +120,8 @@ static int lsensor_destroy(lua_State *L)
     sensor_userdata_t *so;
     so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
 
-    if (strcmp(so->type,HCSR04)==0) {
-      destroy_HCSR04(so->s);
-    }
+    if (strcmp(so->type,HCSR04)==0) { destroy_HCSR04(so->s); }
+    if (strcmp(so->type,WAPIRS)==0) { destroy_WAPIRS(so->s); }
 
     if (so->s != NULL) sensor_destroy(so->s);
     so->s = NULL;
@@ -138,11 +137,10 @@ static int lsensor_tostring(lua_State *L)
     sensor_userdata_t *so;
     so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
 
-    if (strcmp(so->type,HCSR04)==0) {
-      lua_pushfstring(L, tostring_HCSR04(so));
-    } else {
-      lua_pushfstring(L, INVALIDSENSOR);
-    }
+    if (strcmp(so->type,HCSR04)==0) { lua_pushfstring(L, tostring_HCSR04(so)); }
+    else if(strcmp(so->type,WAPIRS)==0) { lua_pushfstring(L, tostring_WAPIRS(so)); }
+    else { lua_pushfstring(L, INVALIDSENSOR); }
+
     return 1;
 }
 static int lsensor_linfo(lua_State *L)
@@ -150,11 +148,9 @@ static int lsensor_linfo(lua_State *L)
   sensor_userdata_t *so;
   so = (sensor_userdata_t *)luaL_checkudata(L, 1, "Sensor");
 
-  if (strcmp(so->type,HCSR04)==0) {
-    lua_pushfstring(L, info_HCSR04());
-  } else {
-    lua_pushfstring(L, INVALIDSENSOR);
-  }
+  if (strcmp(so->type,HCSR04)==0) { lua_pushfstring(L, info_HCSR04()); }
+  else if(strcmp(so->type,WAPIRS)==0) { lua_pushfstring(L, info_WAPIRS(so)); }
+  else { lua_pushfstring(L, INVALIDSENSOR); }
 
   return 1;
 }
@@ -165,6 +161,7 @@ static int lsensor_lcallback(lua_State *L)
   const char *callbackName;
   callbackName = luaL_checkstring(L, 2);
   so->callback = callbackName;
+  
   return 1;
 }
 
