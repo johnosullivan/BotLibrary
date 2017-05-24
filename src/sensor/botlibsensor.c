@@ -119,7 +119,31 @@ static int lsensor_read(lua_State *L)
     if (strcmp(so->type,HCSR04)==0) { lua_pushnumber(L, read_HCSRO4(so->s)); }
     else if (strcmp(so->type,WAPIRS)==0) { lua_pushboolean(L, read_WAPIRS(so->s)); }
     else if (strcmp(so->type,LFIRS)==0) { lua_pushboolean(L, read_LFIRS(so->s)); }
-    else if (strcmp(so->type,GY521)==0) { lua_pushnumber(L, read_GY521(so->s)); }
+    else if (strcmp(so->type,GY521)==0) {
+      double *data = read_GY521(so->s);
+      lua_createtable(L, 0, 7);
+      lua_pushstring(L, "temp");
+      lua_pushnumber(L, data[0]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "a_x");
+      lua_pushnumber(L, data[1]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "a_y");
+      lua_pushnumber(L, data[2]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "a_z");
+      lua_pushnumber(L, data[3]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "g_x");
+      lua_pushnumber(L, data[4]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "g_y");
+      lua_pushnumber(L, data[5]);
+      lua_settable(L, -3);
+      lua_pushstring(L, "g_z");
+      lua_pushnumber(L, data[6]);
+      lua_settable(L, -3);
+    }
     else { lua_pushnumber(L, 0.0); }
 
     return 1;
@@ -132,6 +156,8 @@ static int lsensor_destroy(lua_State *L)
     if (strcmp(so->type,HCSR04)==0) { destroy_HCSR04(so->s); }
     if (strcmp(so->type,WAPIRS)==0) { destroy_WAPIRS(so->s); }
     if (strcmp(so->type,LFIRS)==0) { destroy_LFIRS(so->s); }
+    if (strcmp(so->type,GY521)==0) { destroy_GY521(so->s); }
+
 
     if (so->s != NULL) sensor_destroy(so->s);
     so->s = NULL;

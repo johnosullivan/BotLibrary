@@ -38,7 +38,7 @@
 #define GYRO_RANGE_2000DEG 0x18
 
 sensor_t* config_GY521(int smbus,int address);
-double      read_GY521(sensor_t *sensor_object);
+double*      read_GY521(sensor_t *sensor_object);
 void     destroy_GY521(sensor_t *sensor_object);
 char*   tostring_GY521(sensor_userdata_t *sensor_data);
 char*       info_GY521();
