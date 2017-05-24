@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../gpio/gpio.h"
+#include "../i2c/i2c.h"
 /* Defining Sensor Structures */
 struct sensor;
 typedef struct sensor sensor_t;
@@ -18,9 +19,7 @@ struct sensor {
     gpio_t pin8;
     gpio_t pin9;
     gpio_t pin10;
-    int fd;
-    int bus;
-    int address;
+    i2c_t i2c;
 };
 typedef struct {
     sensor_t *s;

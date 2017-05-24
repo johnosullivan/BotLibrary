@@ -33,9 +33,6 @@ sensor_t *sensor_create(gpio_t pin1,gpio_t pin2,gpio_t pin3,gpio_t pin4,gpio_t p
     s->pin8 = pin8;
     s->pin9 = pin9;
     s->pin10 = pin10;
-    s->address = 0;
-    s->bus = 0;
-    s->fd = 0;
     return s;
 }
 void sensor_destroy(sensor_t *s)
