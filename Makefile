@@ -20,11 +20,11 @@ else
 	SHARELIB_FLAGS = --shared
 endif
 
-all: botlibcore.so botlibservo.so botlibsensor.so botlibgpio.so botlib.so
+all: botlibcore.so botlibservo.so botlibsensor.so botlibgpio.so botlibi2c.so botlib.so
 
 LIB_H += $(wildcard *.h)
 
-OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o src/sensor/sensor.o
+OBJECTS += src/core/botlibcore.o src/servo/botlibservo.o src/sensor/botlibsensor.o src/servo/servo.o src/gpio/botlibgpio.o src/i2c/botlibi2c.o src/botlib.o src/servo/maestro/maestro.o src/gpio/gpio.o src/sensor/sensor.o
 SENSORS += src/sensor/sensors/HCSR04/HCSR04.o src/sensor/sensors/WAPIRS/WAPIRS.o src/sensor/sensors/LFIRS/LFIRS.o
 
 $(OBJECTS): $(LIB_H)
@@ -40,10 +40,13 @@ botlibservo.so: src/servo/botlibservo.o src/servo/servo.o src/servo/maestro/maes
 
 botlibsensor.so: src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/gpio.o \
 	  src/sensor/sensors/HCSR04/HCSR04.o src/sensor/sensors/WAPIRS/WAPIRS.o \
-		src/sensor/sensors/LFIRS/LFIRS.o 
+		src/sensor/sensors/LFIRS/LFIRS.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 botlibgpio.so: src/gpio/botlibgpio.o src/gpio/gpio.o
+		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
+
+botlibi2c.so: src/i2c/botlibi2c.o src/i2c/i2c.o
 		$(CC) $(SHARELIB_FLAGS) -o $(BIN)$@ $^
 
 botlib.so: src/botlib.o src/core/botlibcore.o src/servo/servo.o src/servo/botlibservo.o src/servo/maestro/maestro.o src/sensor/botlibsensor.o src/sensor/sensor.o src/gpio/botlibgpio.o src/gpio/gpio.o
@@ -61,6 +64,7 @@ install_lua: all
 	$(INSTALL_DATA) bin/botlibsensor.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
 	$(INSTALL_DATA) bin/botlibgpio.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
 	$(INSTALL_DATA) bin/botlib.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
+	$(INSTALL_DATA) bin/botlibi2c.so $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibi2c.so
 	@echo "[==========================Installation Complete============================]"
 
 install_py:
@@ -79,6 +83,7 @@ uninstall:
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibsensor.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibgpio.so
 	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlib.so
+	$(RM) $(PREFIX)/lib/lua/$(LUA_VERSION)/botlibi2c.so
 	@echo "[============================Uninstall Complete=============================]"
 
 tests_lua:
@@ -112,6 +117,8 @@ clean:
 	$(RM) -r bin/botlibgpio.so.dSYM
 	$(RM) bin/botlib.so
 	$(RM) -r bin/botlib.so.dSYM
+	$(RM) bin/botlibi2c.so
+	$(RM) -r bin/botlibi2c.so.dSYM
 	$(RM) $(OBJECTS)
 	$(RM) $(SENSORS)
 	@echo "[=============================Clean Complete================================]"

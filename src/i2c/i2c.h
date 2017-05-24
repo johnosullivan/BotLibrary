@@ -5,6 +5,11 @@
 #include <stdint.h>
 #include <limits.h>
 
+#ifdef __APPLE__
+#include <time.h>
+#elif __linux__
+#include <sys/time.h>
+#endif
 #include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 
