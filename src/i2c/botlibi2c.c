@@ -325,7 +325,7 @@ static const struct luaL_Reg periphery_i2c_m[] = {
     {NULL, NULL}
 };
 
-LUALIB_API int luaopen_botlibsensor(lua_State *L) {
+LUALIB_API int luaopen_botlibi2c(lua_State *L) {
     /* Create BotLib.I2C metatable */
     luaL_newmetatable(L, "BotLib.I2C");
     /* Set metatable functions */
