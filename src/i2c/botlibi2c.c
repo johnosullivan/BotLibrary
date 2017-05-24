@@ -354,7 +354,7 @@ LUALIB_API int luaopen_botlibsensor(lua_State *L) {
     /* Set it as the metatable for the BotLib.I2C metatable */
     lua_setmetatable(L, -2);
 
-    lua_pushstring(L, LUA_PERIPHERY_VERSION);
+    lua_pushstring(L, "1.0");
     lua_setfield(L, -2, "version");
 
     /* Copy useful message flags from <linux/i2c.h> */
