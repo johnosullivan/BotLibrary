@@ -16,7 +16,7 @@ sensor_t* config_GY521(int smbus,int address) {
 }
 double read_GY521(sensor_t *sensor_object) {
   #ifdef __linux__
-  i2c_t i2c = sensor_object.i2c;
+  i2c_t i2c = sensor_object->i2c;
   uint8_t temp_addr[1] = { 0x41 };
   uint8_t temp_data[2] = { 0x00,0x00 };
   uint8_t gyro_addr[3] = { 0x43,0x45,0x47 };
