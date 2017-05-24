@@ -72,12 +72,14 @@
 #include "sensors/HCSR04/HCSR04.h"
 #include "sensors/WAPIRS/WAPIRS.h"
 #include "sensors/LFIRS/LFIRS.h"
+#include "sensors/GY521/GY521.h"
 /* Defining sensor types */
 #define INVALIDSENSOR "Error invalid sensor, please check your sensor's configuration."
 
 #define HCSR04 "HC-SR04"
 #define WAPIRS "WAPIRS"
 #define LFIRS  "LFIRS"
+#define GY521  "GY521"
 
 static int lsensor_new(lua_State *L)
 {
@@ -98,6 +100,8 @@ static int lsensor_new(lua_State *L)
     if (strcmp(type,HCSR04)==0) { so->s = config_HCSR04(luaL_checknumber(L, 3), luaL_checknumber(L, 4)); }
     if (strcmp(type,WAPIRS)==0) { so->s = config_WAPIRS(luaL_checknumber(L, 3)); }
     if (strcmp(type,LFIRS)==0) { so->s = config_LFIRS(luaL_checknumber(L, 3)); }
+    if (strcmp(type,GY521)==0) { so->s = config_GY521(luaL_checknumber(L, 3), luaL_checknumber(L, 4)); }
+
 
     so->name = strdup(name);
     so->type = strdup(type);
@@ -115,6 +119,7 @@ static int lsensor_read(lua_State *L)
     if (strcmp(so->type,HCSR04)==0) { lua_pushnumber(L, read_HCSRO4(so->s)); }
     else if (strcmp(so->type,WAPIRS)==0) { lua_pushboolean(L, read_WAPIRS(so->s)); }
     else if (strcmp(so->type,LFIRS)==0) { lua_pushboolean(L, read_LFIRS(so->s)); }
+    else if (strcmp(so->type,GY521)==0) { lua_pushnumber(L, read_GY521(so->s)); }
     else { lua_pushnumber(L, 0.0); }
 
     return 1;

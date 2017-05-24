@@ -17,8 +17,8 @@
 #include <windows.h>
 #endif
 
-/*#define GRAVITIY_MS2 9.80665
-#define ACCEL_SCALE_MODIFIER_2G 16384.0
+#define GY521_I2C_ADDR 0x68
+#define	ACCEL_SCALE_MODIFIER_2G 16384.0
 #define ACCEL_SCALE_MODIFIER_4G 8192.0
 #define ACCEL_SCALE_MODIFIER_8G 4096.0
 #define ACCEL_SCALE_MODIFIER_16G 2048.0
@@ -34,19 +34,8 @@
 #define GYRO_RANGE_500DEG 0x08
 #define GYRO_RANGE_1000DEG 0x10
 #define GYRO_RANGE_2000DEG 0x18
-#define PWR_MGMT_1 0x6B
-#define PWR_MGMT_2 0x6C
-#define ACCEL_XOUT0 0x3B
-#define ACCEL_YOUT0 0x3D
-#define ACCEL_ZOUT0 0x3F
-#define TEMP_OUT0 0x41
-#define GYRO_XOUT0 0x43
-#define GYRO_YOUT0 0x45
-#define GYRO_ZOUT0 0x47
-#define ACCEL_CONFIG 0x1C
-#define GYRO_CONFIG 0x1B*/
 
-sensor_t* config_GY521(int smbus);
+sensor_t* config_GY521(int smbus,int address);
 double      read_GY521(sensor_t *sensor_object);
 void     destroy_GY521(sensor_t *sensor_object);
 char*   tostring_GY521(sensor_userdata_t *sensor_data);

@@ -18,6 +18,9 @@ struct sensor {
     gpio_t pin8;
     gpio_t pin9;
     gpio_t pin10;
+    int fd;
+    int bus;
+    int address;
 };
 typedef struct {
     sensor_t *s;
