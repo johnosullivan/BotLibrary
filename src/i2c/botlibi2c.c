@@ -10,34 +10,9 @@
 #include <errno.h>
 #include "i2c.h"
 
-/*
-local periphery = require('periphery')
-local I2C = BotLib.I2C
-
--- Module Version
-I2C.version     <string>
-
--- Constructor
-i2c = I2C(device <path string>)
-i2c = I2C{device=<path string>}
-
--- Methods
-i2c:transfer(address <number>, messages <table>)
-i2c:close()
-
--- Properties
-i2c.fd          immutable <number>
-
--- Constants
-I2C.I2C_M_TEN
-I2C.I2C_M_RD
-I2C.I2C_M_STOP
-I2C.I2C_M_NOSTART
-I2C.I2C_M_REV_DIR_ADDR
-I2C.I2C_M_IGNORE_NAK
-I2C.I2C_M_NO_RD_ACK
-I2C.I2C_M_RECV_LEN
-*/
+#define lua_pushunsigned(L,n)   lua_pushinteger(L, (lua_Integer)(n))
+#define lua_tounsignedx(L,i,is) ((lua_Unsigned)lua_tointegerx(L,i,is))
+#define lua_tounsigned(L,i)     lua_tounsignedx(L,(i),NULL)
 
 /* Define a new error for malloc() required in read/write */
 #define I2C_ERROR_ALLOC    (I2C_ERROR_CLOSE-1)
@@ -79,13 +54,14 @@ static int lua_i2c_error(lua_State *L, enum i2c_error_code code, int c_errno, co
 
     return lua_error(L);
 }
-
+#ifdef __linux__
 static void lua_i2c_checktype(lua_State *L, int index, int type) {
     if (lua_type(L, index) != type)
         lua_i2c_error(L, I2C_ERROR_ARG, 0, "Error: invalid argument #%d (%s expected, got %s)", index, lua_typename(L, type), lua_typename(L, lua_type(L, index)));
 }
 
 static int lua_i2c_open(lua_State *L) {
+    #ifdef __linux__
     i2c_t *i2c;
     const char *device;
     int ret;
@@ -114,10 +90,13 @@ static int lua_i2c_open(lua_State *L) {
     if ((ret = i2c_open(i2c, device)) < 0)
         return lua_i2c_error(L, ret, i2c_errno(i2c), i2c_errmsg(i2c));
 
+    #endif
     return 0;
 }
+#endif
 
 static int lua_i2c_new(lua_State *L) {
+    #ifdef __linux__
     /* Remove self table object */
     lua_remove(L, 1);
 
@@ -135,9 +114,11 @@ static int lua_i2c_new(lua_State *L) {
     /* Leave only userdata on the stack */
     lua_settop(L, 1);
 
+    #endif
+
     return 1;
 }
-
+#ifdef __linux__
 static void _free_i2c_msgs(struct i2c_msg *i2c_msgs, unsigned int num_msgs) {
     unsigned int i;
 
@@ -147,8 +128,9 @@ static void _free_i2c_msgs(struct i2c_msg *i2c_msgs, unsigned int num_msgs) {
     }
     free(i2c_msgs);
 }
-
+#endif
 static int lua_i2c_transfer(lua_State *L) {
+    #ifdef __linux__
     i2c_t *i2c;
     struct i2c_msg *i2c_msgs;
     unsigned int num_msgs;
@@ -254,11 +236,12 @@ static int lua_i2c_transfer(lua_State *L) {
     }
 
     _free_i2c_msgs(i2c_msgs, num_msgs);
-
+    #endif
     return 1;
 }
 
 static int lua_i2c_close(lua_State *L) {
+    #ifdef __linux__
     i2c_t *i2c;
     int ret;
 
@@ -267,10 +250,13 @@ static int lua_i2c_close(lua_State *L) {
     if ((ret = i2c_close(i2c)) < 0)
         return lua_i2c_error(L, ret, i2c_errno(i2c), "Error: %s", i2c_errmsg(i2c));
 
+
+    #endif
     return 0;
 }
 
 static int lua_i2c_tostring(lua_State *L) {
+    #ifdef __linux__
     i2c_t *i2c;
     char i2c_str[128];
 
@@ -280,10 +266,13 @@ static int lua_i2c_tostring(lua_State *L) {
 
     lua_pushstring(L, i2c_str);
 
+
+    #endif
     return 1;
 }
 
 static int lua_i2c_index(lua_State *L) {
+    #ifdef __linux__
     i2c_t *i2c;
     const char *field;
 
@@ -304,11 +293,13 @@ static int lua_i2c_index(lua_State *L) {
         lua_pushinteger(L, i2c_fd(i2c));
         return 1;
     }
+    #endif
 
     return lua_i2c_error(L, I2C_ERROR_ARG, 0, "Error: unknown property");
 }
 
 static int lua_i2c_newindex(lua_State *L) {
+    #ifdef __linux__
     const char *field;
 
     if (!lua_isstring(L, 2))
@@ -318,6 +309,9 @@ static int lua_i2c_newindex(lua_State *L) {
 
     if (strcmp(field, "fd") == 0)
         return lua_i2c_error(L, I2C_ERROR_ARG, 0, "Error: immutable property");
+
+
+    #endif
 
     return lua_i2c_error(L, I2C_ERROR_ARG, 0, "Error: unknown property");
 }
@@ -359,6 +353,7 @@ LUALIB_API int luaopen_botlibsensor(lua_State *L) {
 
     /* Copy useful message flags from <linux/i2c.h> */
     /* The constants below are available from kernel version 3.2 onwards */
+    #ifdef __linux__
     lua_pushunsigned(L, I2C_M_TEN);
     lua_setfield(L, -2, "I2C_M_TEN");
     lua_pushunsigned(L, I2C_M_RD);
@@ -373,6 +368,7 @@ LUALIB_API int luaopen_botlibsensor(lua_State *L) {
     lua_setfield(L, -2, "I2C_M_NO_RD_ACK");
     lua_pushunsigned(L, I2C_M_RECV_LEN);
     lua_setfield(L, -2, "I2C_M_RECV_LEN");
+    #endif
     /* I2C_M_STOP flag was added in kernel version 3.6 */
     #ifdef I2C_M_STOP
     lua_pushunsigned(L, I2C_M_STOP);

@@ -10,12 +10,16 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+#ifdef __linux__
 #include <sys/ioctl.h>
-
+#endif
 
 #include "i2c.h"
 
+#ifdef __linux__
+
 static int _i2c_error(struct i2c_handle *i2c, int code, int c_errno, const char *fmt, ...) {
+    #ifdef __linux__
     va_list ap;
 
     i2c->error.c_errno = c_errno;
@@ -30,11 +34,12 @@ static int _i2c_error(struct i2c_handle *i2c, int code, int c_errno, const char 
         strerror_r(c_errno, buf, sizeof(buf));
         snprintf(i2c->error.errmsg+strlen(i2c->error.errmsg), sizeof(i2c->error.errmsg)-strlen(i2c->error.errmsg), ": %s [errno %d]", buf, c_errno);
     }
-
+    #endif
     return code;
 }
 
 int i2c_open(i2c_t *i2c, const char *path) {
+    #ifdef __linux__
     uint32_t supported_funcs;
 
     memset(i2c, 0, sizeof(struct i2c_handle));
@@ -54,11 +59,12 @@ int i2c_open(i2c_t *i2c, const char *path) {
         close(i2c->fd);
         return _i2c_error(i2c, I2C_ERROR_NOT_SUPPORTED, 0, "I2C not supported on %s", path);
     }
-
+    #endif
     return 0;
 }
 
 int i2c_transfer(i2c_t *i2c, struct i2c_msg *msgs, size_t count) {
+    #ifdef __linux__
     struct i2c_rdwr_ioctl_data i2c_rdwr_data;
 
     /* Prepare I2C transfer structure */
@@ -70,10 +76,12 @@ int i2c_transfer(i2c_t *i2c, struct i2c_msg *msgs, size_t count) {
     if (ioctl(i2c->fd, I2C_RDWR, &i2c_rdwr_data) < 0)
         return _i2c_error(i2c, I2C_ERROR_TRANSFER, errno, "I2C transfer");
 
+    #endif
     return 0;
 }
 
 int i2c_close(i2c_t *i2c) {
+    #ifdef __linux__
     if (i2c->fd < 0)
         return 0;
 
@@ -82,6 +90,8 @@ int i2c_close(i2c_t *i2c) {
         return _i2c_error(i2c, I2C_ERROR_CLOSE, errno, "Closing I2C device");
 
     i2c->fd = -1;
+
+    #endif
 
     return 0;
 }
@@ -101,3 +111,5 @@ int i2c_errno(i2c_t *i2c) {
 int i2c_fd(i2c_t *i2c) {
     return i2c->fd;
 }
+
+#endif

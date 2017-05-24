@@ -9,9 +9,9 @@
 #include <time.h>
 #elif __linux__
 #include <sys/time.h>
+#include <linux/i2c-dev.h>
 #endif
-#include <linux/i2c.h>
-//#include <linux/i2c-dev.h>
+//#include <linux/i2c.h>
 
 enum i2c_error_code {
     I2C_ERROR_ARG               = -1, /* Invalid arguments */
@@ -31,17 +31,15 @@ typedef struct i2c_handle {
     } error;
 } i2c_t;
 
-/* Primary Functions */
+#ifdef __linux__
 int i2c_open(i2c_t *i2c, const char *path);
 int i2c_transfer(i2c_t *i2c, struct i2c_msg *msgs, size_t count);
 int i2c_close(i2c_t *i2c);
-
-/* Miscellaneous */
 int i2c_fd(i2c_t *i2c);
 int i2c_tostring(i2c_t *i2c, char *str, size_t len);
-
-/* Error Handling */
 int i2c_errno(i2c_t *i2c);
 const char *i2c_errmsg(i2c_t *i2c);
+#endif
+
 
 #endif
