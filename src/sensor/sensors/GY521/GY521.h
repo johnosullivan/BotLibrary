@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "../../sensor.h"
 #include "../../../gpio/gpio.h"
+#include "../../../i2c/i2c.h"
 
 #ifdef __APPLE__
 #define DEBUG true
