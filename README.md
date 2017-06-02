@@ -10,6 +10,8 @@ The core of the botlib library holds the underlining function that will help the
 
 ### botlibgpio
 
+GPIO (General Purpose Input Output) pins are built in to most of the computer boards for example ODroid and Raspberry Pi. This library is a clean and simple to ease the user in test and writing script to write and read hardware from the pins configurations. Botlibgpio supports all the conventionally GPIO protocol located at <a href="https://www.kernel.org/doc/Documentation/gpio/sysfs.txt">https://www.kernel.org/doc/Documentation/gpio/sysfs.txt</a>. Lastly the library has preload board configurations which allows the user to see the pin layout with color and labeling in the terminal.
+
 ### botlibi2c
 
 ### botlibsensor
