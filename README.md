@@ -2,19 +2,19 @@
 
 "Bot Library was born out of curiosity. BL is meant to act as the buffer between block and hard coding of robotic components. The goal is to foster individual's from a younger age into the field of AI and robotics. Hopefully Bot Library will reduce the barrier of intimidation towards the subject."
 
-#Libraries Included
+# Libraries Included
 
-###botlibcore
+### botlibcore
 
 The core of the botlib library holds the underlining function that will help the developer determine what libraries will work on their boards. In additon the core support gettimeofday() function in milliseconds consiodering lua only does timing in second. milliseconds are extremely important in the finding distance in sensor and delays in sensors.
 
-###botlibgpio
+### botlibgpio
 
-###botlibi2c
+### botlibi2c
 
-###botlibsensor
+### botlibsensor
 
-###botlibservo
+### botlibservo
 
 
 
